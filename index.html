@@ -1,269 +1,1101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The To-Do List</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Poppins font from Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
-  <!-- Chart.js for pie charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The To-Do List - View Tasks</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  /* HEADER */
+  header {
+    background-color: #FF7F00;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 2rem;
+    font-weight: bold;
+    font-size: 1.3rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.8rem;
+    user-select: none;
+  }
+  .quote {
+    font-style: italic;
+    font-weight: 500;
+    text-align: center;
+    flex-grow: 1;
+    margin: 0 2rem;
+    color: #fff;
+    animation: blink 1.5s infinite;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40vw;
+  }
+  @keyframes blink {
+    0%, 100% {opacity: 1;}
+    50% {opacity: 0.4;}
+  }
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+  nav a:hover {
+    background-color: rgba(255,255,255,0.3);
+    color: #000;
+  }
+  nav a.active {
+    background-color: #fff;
+    color: #FF7F00;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.3fr;
+    gap: 1rem;
+    padding: 1rem 2rem 2rem 2rem;
+    background: #f9f9f9;
+    min-height: 0;
+  }
+
+  /* LEFT COLUMN */
+  #left-col {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 80vh;
+    overflow-y: auto;
+  }
+  /* Calendar */
+  .calendar {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    user-select: none;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  .calendar-header button {
+    background: #FF7F00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    font-weight: 700;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .calendar-header button:hover {
+    background-color: #e67300;
+  }
+  .calendar-month-year {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 0.2rem;
+  }
+  .calendar-day-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .calendar-date {
+    padding: 0.5rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    user-select: none;
+  }
+  .calendar-date:hover {
+    background-color: #FFE0B2;
+  }
+  .calendar-date.today {
+    background-color: #FF7F00;
+    color: white;
+    font-weight: 700;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    margin: auto;
+  }
+  .year-select {
+    padding: 0.3rem 0.6rem;
+    font-weight: 600;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    user-select: none;
+    background: white;
+  }
+
+  /* Pomodoro Timer */
+  .pomodoro {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    user-select: none;
+  }
+  .pomodoro h3 {
+    margin-top: 0;
+  }
+  .timer-display {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    font-family: monospace;
+  }
+  .pomodoro-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  .pomodoro-controls button {
+    background-color: #FF7F00;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .pomodoro-controls button:hover {
+    background-color: #e67300;
+  }
+  .time-adjust {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .time-adjust button {
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+  }
+  .sound-options {
+    margin-top: 0.8rem;
+    text-align: left;
+  }
+  .sound-options label {
+    margin-right: 10px;
+    user-select: none;
+  }
+
+  /* Productivity Chart */
+  .productivity {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    user-select: none;
+  }
+  .prod-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .prod-header h3 {
+    margin: 0;
+  }
+  .prod-toggle {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .prod-toggle button {
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+  }
+  .prod-toggle button.active {
+    background: #FF7F00;
+    color: white;
+    border-color: #e67300;
+  }
+  #prodCanvas {
+    display: block;
+    margin: 0 auto;
+  }
+  .legend {
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: #555;
+  }
+  .legend span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+  .done-color { background: #FFD54F; }
+  .doing-color { background: #FFB300; }
+  .todo-color { background: #FFF8E1; }
+
+  /* CENTER COLUMN */
+  #center-col {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    min-height: 80vh;
+    overflow-y: auto;
+  }
+  #center-col h2 {
+    margin: 0 0 0.6rem 0;
+    border-bottom: 2px solid #FF7F00;
+    padding-bottom: 0.3rem;
+  }
+  /* Task List */
+  #task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+  #task-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 5px;
+    cursor: grab;
+    user-select: none;
+    border: 1px solid transparent;
+    transition: background-color 0.25s ease;
+  }
+  #task-list li.dragging {
+    opacity: 0.5;
+  }
+  #task-list li:hover {
+    background-color: #FFF3E0;
+    border-color: #FF7F00;
+  }
+  #task-list li.done {
+    text-decoration: line-through;
+    font-style: italic;
+    color: #999;
+    cursor: default;
+  }
+  #task-list li.done .checkbox {
+    color: green;
+  }
+  .checkbox {
+    cursor: pointer;
+    font-size: 1.2rem;
+    user-select: none;
+  }
+  .task-name {
+    flex-grow: 1;
+  }
+  .task-priority {
+    font-size: 0.8rem;
+    background: #FF7F00;
+    color: white;
+    padding: 1px 6px;
+    border-radius: 4px;
+    user-select: none;
+  }
+  #full-task-view-btn {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    background-color: #FF7F00;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: flex-start;
+    user-select: none;
+  }
+  #full-task-view-btn:hover {
+    background-color: #e67300;
+  }
+
+  /* Upcoming Events */
+  #events-section, #habits-section {
+    border-top: 2px solid #FF7F00;
+    padding-top: 1rem;
+  }
+  #events-list, #habit-list {
+    max-height: 15vh;
+    overflow-y: auto;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  #events-list li, #habit-list li {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    background: #FFF8E1;
+  }
+  #events-list li:hover, #habit-list li:hover {
+    border-color: #FF7F00;
+  }
+  .event-name, .habit-name {
+    font-weight: 600;
+  }
+  .event-sub, .habit-sub {
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  /* RIGHT COLUMN */
+  #right-col {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    min-height: 80vh;
+    overflow-y: auto;
+  }
+  /* Forms */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  form label {
+    font-weight: 600;
+  }
+  form input[type="text"],
+  form input[type="date"],
+  form select,
+  form textarea {
+    padding: 0.4rem 0.6rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  form textarea {
+    resize: vertical;
+  }
+  form button {
+    background-color: #FF7F00;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  form button:hover {
+    background-color: #e67300;
+  }
+
+  .form-expandable {
+    border: 1px solid #ddd;
+    padding: 0.8rem;
+    border-radius: 10px;
+  }
+  .form-expandable h3 {
+    margin: 0 0 0.5rem 0;
+    user-select: none;
+  }
+
+  /* Tomorrow’s Tasks with week toggle */
+  #tomorrow-tasks-section {
+    border-top: 2px solid #FF7F00;
+    padding-top: 1rem;
+  }
+  #tomorrow-tasks-list {
+    max-height: 15vh;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #tomorrow-tasks-list li {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    background: #FFE0B2;
+  }
+  #tomorrow-tasks-list li:hover {
+    border-color: #FF7F00;
+  }
+  #tom-toggle-week {
+    margin-top: 0.3rem;
+    background: #FF7F00;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    user-select: none;
+  }
+  #tom-toggle-week:hover {
+    background: #e67300;
+  }
+
+  /* Team Tasks */
+  #team-tasks-section {
+    border-top: 2px solid #FF7F00;
+    padding-top: 1rem;
+  }
+  #team-tasks-list {
+    max-height: 15vh;
+    overflow-y: auto;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #team-tasks-list li {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    background: #FFF3E0;
+  }
+  #team-tasks-list li:hover {
+    border-color: #FF7F00;
+  }
+
+  /* Task Manager */
+  #task-manager {
+    border-top: 2px solid #FF7F00;
+    padding-top: 1rem;
+  }
+  #tags-list {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .tag {
+    padding: 3px 10px;
+    border-radius: 20px;
+    background-color: #FF7F00;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tag .remove-tag {
+    font-weight: 900;
+    cursor: pointer;
+    user-select: none;
+  }
+  #task-manager-tasks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 20vh;
+    overflow-y: auto;
+  }
+  #task-manager-tasks li {
+    padding: 6px 8px;
+    border-radius: 5px;
+    background: #FFECB3;
+    margin-bottom: 4px;
+    cursor: grab;
+    user-select: none;
+  }
+
+  /* Scrollbars for overflow-y */
+  #left-col::-webkit-scrollbar,
+  #center-col::-webkit-scrollbar,
+  #right-col::-webkit-scrollbar {
+    width: 8px;
+  }
+  #left-col::-webkit-scrollbar-thumb,
+  #center-col::-webkit-scrollbar-thumb,
+  #right-col::-webkit-scrollbar-thumb {
+    background-color: #FF7F00;
+    border-radius: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    background-color: #FF7F00;
+    color: white;
+    text-align: center;
+    padding: 0.7rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+  footer a {
+    color: #fff;
+    font-weight: 900;
+  }
+</style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header id="header">
-    <div class="header-left">
-      <div id="logo">📝✒️</div>
-      <div id="site-name">The To-Do List</div>
-    </div>
-    <div class="header-center" id="daily-quote">“Productivity is never an accident.”</div>
-    <nav class="header-right">
-      <a href="profile.html">Profile</a>
-      <a href="about.html">About Us</a>
-      <a href="index.html">View Tasks</a>
-    </nav>
-  </header>
 
-  <!-- STREAK + NOTIFICATIONS BAR -->
-  <div id="streak-notification-bar">
-    <div id="notifications-container">
-      <button id="notification-btn">Notifications <span id="notification-count">1</span></button>
-      <div id="notification-list" class="hidden">
-        <ul>
-          <li>Welcome back, Anjana! Let’s get productive today.</li>
-          <li>Reminder: Task “Finish report” in 15 minutes at 5:45 PM.</li>
-        </ul>
+<header>
+  <div class="logo">✒️ The To-Do List</div>
+  <div class="quote" id="daily-quote">Loading quote...</div>
+  <nav>
+    <a href="profile.html">Profile</a>
+    <a href="about.html">About Us</a>
+    <a href="index.html" class="active">View Tasks</a>
+  </nav>
+</header>
+
+<main>
+  <!-- LEFT COLUMN -->
+  <section id="left-col" aria-label="Sidebar with calendar, pomodoro, productivity chart">
+    <!-- Calendar -->
+    <section class="calendar" aria-label="Calendar with month view">
+      <div class="calendar-header">
+        <button id="prev-month" aria-label="Previous Month">&lt;</button>
+        <div class="calendar-month-year" id="calendar-month-year">March 2024</div>
+        <button id="next-month" aria-label="Next Month">&gt;</button>
       </div>
-    </div>
-    <div id="streak-container">
-      Streak: <span id="streak-count">3</span> days
-    </div>
-  </div>
+      <select id="year-select" class="year-select" aria-label="Select year"></select>
+      <div class="calendar-grid" id="calendar-grid" aria-live="polite" role="grid" aria-rowcount="7" aria-colcount="7"></div>
+    </section>
 
-  <!-- MAIN CONTENT -->
-  <main id="main-content">
-    <!-- Left Column -->
-    <section id="left-column">
-      <div id="calendar-card" class="card">
-        <h2>Calendar</h2>
-        <div id="calendar-controls">
-          <button id="prev-month">&#8592;</button>
-          <span id="calendar-month-year">June 2025</span>
-          <button id="next-month">&#8594;</button>
-          <select id="year-select"></select>
-        </div>
-        <div id="calendar"></div>
+    <!-- Pomodoro Timer -->
+    <section class="pomodoro" aria-label="Pomodoro Timer">
+      <h3>Pomodoro Timer</h3>
+      <div class="timer-display" id="pomodoro-timer">25:00</div>
+      <div class="pomodoro-controls">
+        <button id="pom-start" aria-label="Start Timer">Start</button>
+        <button id="pom-pause" aria-label="Pause Timer" disabled>Pause</button>
+        <button id="pom-reset" aria-label="Reset Timer">Reset</button>
       </div>
-
-      <div id="pomodoro-card" class="card">
-        <h2>Pomodoro Timer</h2>
-        <div id="pomodoro-timer">
-          <canvas id="pomodoro-clock" width="150" height="150"></canvas>
-          <div id="pomodoro-controls">
-            <button id="pomodoro-start">Start</button>
-            <button id="pomodoro-pause">Pause</button>
-            <button id="pomodoro-reset">Reset</button>
-          </div>
-          <div id="pomodoro-sound-options">
-            <label><input type="checkbox" id="sound-toggle" /> Sound</label>
-            <select id="sound-choice" disabled>
-              <option value="none">None</option>
-              <option value="sea">Sea</option>
-              <option value="rain">Rain</option>
-              <option value="forest">Forest</option>
-            </select>
-          </div>
-        </div>
+      <div class="time-adjust">
+        <button id="dec-time" aria-label="Decrease Pomodoro Time">-</button>
+        <div id="pom-duration-display" aria-live="polite">25 min</div>
+        <button id="inc-time" aria-label="Increase Pomodoro Time">+</button>
       </div>
-
-      <div id="productivity-card" class="card">
-        <h2>Productivity</h2>
-        <canvas id="productivity-pie" width="200" height="200"></canvas>
-        <div id="productivity-toggle">
-          <button data-view="daily" class="active">Daily</button>
-          <button data-view="weekly">Weekly</button>
-          <button data-view="monthly">Monthly</button>
-        </div>
-        <div id="legend">
-          <span><span class="legend-box done"></span> Done</span>
-          <span><span class="legend-box doing"></span> Doing</span>
-          <span><span class="legend-box todo"></span> To Do</span>
-        </div>
+      <div class="sound-options" aria-label="Pomodoro Timer Sound Options">
+        <label><input type="radio" name="pom-sound" value="bell" checked /> Bell</label>
+        <label><input type="radio" name="pom-sound" value="alarm" /> Alarm</label>
+        <label><input type="radio" name="pom-sound" value="beep" /> Beep</label>
+        <label><input type="checkbox" id="mute-sound" /> Mute</label>
       </div>
     </section>
 
-    <!-- Center Column -->
-    <section id="center-column">
-      <div id="today-tasks-card" class="card">
-        <h2>Today's Tasks</h2>
-        <ul id="today-task-list" class="task-list">
-          <li draggable="true" class="task doing" data-id="1">
-            <input type="checkbox" /> Finish project proposal <span class="tag school">School</span>
-          </li>
-          <li draggable="true" class="task todo" data-id="2">
-            <input type="checkbox" /> Buy groceries <span class="tag self">Self</span>
-          </li>
-          <li draggable="true" class="task done" data-id="3">
-            <input type="checkbox" checked disabled /> Email client <span class="tag work">Work</span>
-          </li>
-        </ul>
-        <button id="view-all-tasks">View All Tasks</button>
+    <!-- Productivity Pie Chart -->
+    <section class="productivity" aria-label="Productivity Pie Chart">
+      <div class="prod-header">
+        <h3>Productivity</h3>
+        <div class="prod-toggle" role="tablist" aria-label="Select productivity range">
+          <button class="active" data-range="daily" role="tab" aria-selected="true">Daily</button>
+          <button data-range="weekly" role="tab" aria-selected="false">Weekly</button>
+          <button data-range="monthly" role="tab" aria-selected="false">Monthly</button>
+        </div>
       </div>
-
-      <div id="upcoming-events-card" class="card">
-        <h2>Upcoming Events</h2>
-        <ul id="upcoming-events-list" class="event-list">
-          <li>
-            <strong>Mom's Birthday</strong> <span class="subtitle">in 3 days</span> <span class="tag family">Family</span>
-          </li>
-          <li>
-            <strong>Project Deadline</strong> <span class="subtitle">in 5 days</span> <span class="tag work">Work</span>
-          </li>
-        </ul>
-        <button id="add-event-btn">Add Event</button>
-      </div>
-
-      <div id="habit-tracker-card" class="card">
-        <h2>Habit Tracker</h2>
-        <ul id="habit-list" class="habit-list">
-          <li class="habit">
-            <input type="checkbox" /> Meditation <br />
-            <small>Since 01/01/2025</small> <span class="tag self">Self</span>
-          </li>
-          <li class="habit">
-            <input type="checkbox" /> Read for 30 minutes <br />
-            <small>Since 15/03/2025</small> <span class="tag self">Self</span>
-          </li>
-        </ul>
-        <button id="add-habit-btn">Add Habit</button>
+      <canvas id="prodCanvas" width="250" height="250" aria-label="Productivity pie chart"></canvas>
+      <div class="legend">
+        <span class="done-color"></span> Done
+        <span class="doing-color" style="margin-left: 10px;"></span> Doing
+        <span class="todo-color" style="margin-left: 10px;"></span> To-Do
       </div>
     </section>
+  </section>
 
-    <!-- Right Column -->
-    <section id="right-column">
-      <div id="add-task-card" class="card">
-        <h2>Add Task</h2>
-        <button id="expand-add-task">+</button>
-        <form id="add-task-form" class="hidden">
-          <label>
-            Task Name*:
-            <input type="text" id="task-name-input" required />
-          </label>
-          <label>
-            Date:
-            <input type="date" id="task-date-input" />
-          </label>
-          <label>
-            Time:
-            <input type="time" id="task-time-input" />
-          </label>
-          <label>
-            Tag:
-            <select id="task-tag-select">
-              <option value="school">School</option>
-              <option value="family">Family</option>
-              <option value="self">Self</option>
-              <option value="work">Work</option>
-            </select>
-          </label>
-          <label>
-            Collaborator:
-            <input type="text" id="task-collaborator-input" placeholder="Name" />
-          </label>
-          <label>
-            Notes:
-            <textarea id="task-notes-input" rows="3"></textarea>
-          </label>
-          <button type="submit">Add Task</button>
-        </form>
-      </div>
+  <!-- CENTER COLUMN -->
+  <section id="center-col" aria-label="Today's tasks and related lists">
+    <h2>Today's Tasks</h2>
+    <ul id="task-list" aria-live="polite" aria-label="List of tasks for today" tabindex="0"></ul>
+    <button id="full-task-view-btn" aria-label="View full tasks list">View Full Tasks</button>
 
-      <div id="edit-task-card" class="card">
-        <h2>Edit Task</h2>
-        <button id="expand-edit-task">Edit</button>
-        <form id="edit-task-form" class="hidden">
-          <label>
-            Select Task:
-            <select id="edit-task-select"></select>
-          </label>
-          <label>
-            Task Name*:
-            <input type="text" id="edit-task-name" required />
-          </label>
-          <label>
-            Date:
-            <input type="date" id="edit-task-date" />
-          </label>
-          <label>
-            Time:
-            <input type="time" id="edit-task-time" />
-          </label>
-          <label>
-            Tag:
-            <select id="edit-task-tag">
-              <option value="school">School</option>
-              <option value="family">Family</option>
-              <option value="self">Self</option>
-              <option value="work">Work</option>
-            </select>
-          </label>
-          <label>
-            Collaborator:
-            <input type="text" id="edit-task-collaborator" placeholder="Name" />
-          </label>
-          <label>
-            Notes:
-            <textarea id="edit-task-notes" rows="3"></textarea>
-          </label>
-          <button type="submit">Save Changes</button>
-        </form>
-      </div>
-
-      <div id="tomorrow-tasks-card" class="card">
-        <h2>Tomorrow's Tasks</h2>
-        <ul id="tomorrow-task-list" class="task-list">
-          <li>
-            <input type="checkbox" /> Prepare presentation <span class="tag work">Work</span>
-          </li>
-          <li>
-            <input type="checkbox" /> Gym session <span class="tag self">Self</span>
-          </li>
-        </ul>
-        <button id="toggle-week-view">Toggle Week View</button>
-      </div>
-
-      <div id="team-tasks-card" class="card">
-        <h2>Team Tasks</h2>
-        <ul id="team-task-list" class="task-list">
-          <li>
-            <input type="checkbox" /> Update website <span class="tag team">Team</span> <em>(Assigned to Mike)</em>
-          </li>
-          <li>
-            <input type="checkbox" /> Test app features <span class="tag team">Team</span> <em>(Assigned to Sarah)</em>
-          </li>
-        </ul>
-      </div>
-
-      <div id="task-manager-card" class="card">
-        <h2>Task Manager - Tags</h2>
-        <ul id="tag-list" class="tag-list">
-          <li draggable="true" class="tag-item school" data-tag="school">School <span class="color-picker" style="background-color:#FFB347;"></span></li>
-          <li draggable="true" class="tag-item family" data-tag="family">Family <span class="color-picker" style="background-color:#FFD700;"></span></li>
-          <li draggable="true" class="tag-item self" data-tag="self">Self <span class="color-picker" style="background-color:#90EE90;"></span></li>
-          <li draggable="true" class="tag-item work" data-tag="work">Work <span class="color-picker" style="background-color:#6495ED;"></span></li>
-          <li draggable="true" class="tag-item team" data-tag="team">Team <span class="color-picker" style="background-color:#FF69B4;"></span></li>
-        </ul>
-        <button id="add-tag-btn">Add Tag</button>
-      </div>
+    <section id="events-section" aria-label="Upcoming Events">
+      <h3>Upcoming Events</h3>
+      <ul id="events-list" aria-live="polite"></ul>
     </section>
-  </main>
 
-  <!-- FOOTER -->
-  <footer id="footer">
-    © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
-  </footer>
+    <section id="team-tasks-section" aria-label="Team tasks">
+      <h3>Team Tasks</h3>
+      <ul id="team-tasks-list" aria-live="polite"></ul>
+    </section>
+  </section>
 
-  <script src="app.js" defer></script>
+  <!-- RIGHT COLUMN -->
+  <section id="right-col" aria-label="Task Manager and additional forms">
+    <!-- Task Manager -->
+    <section id="task-manager" aria-label="Task Manager">
+      <h3>Manage Tasks</h3>
+      <div id="tags-list" aria-label="Tags List"></div>
+      <form id="task-form" aria-label="Add or edit task">
+        <label for="task-title">Task Title</label>
+        <input type="text" id="task-title" name="task-title" required autocomplete="off" />
+        
+        <label for="task-desc">Description</label>
+        <textarea id="task-desc" name="task-desc" rows="3"></textarea>
+        
+        <label for="task-due-date">Due Date</label>
+        <input type="date" id="task-due-date" name="task-due-date" />
+        
+        <label for="task-tag">Tag</label>
+        <select id="task-tag" name="task-tag">
+          <option value="">None</option>
+          <option value="Urgent">Urgent</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Misc">Misc</option>
+        </select>
+        
+        <button type="submit" id="add-task-btn">Add Task</button>
+      </form>
+    </section>
+
+    <!-- Tomorrow's Tasks -->
+    <section id="tomorrow-tasks-section" aria-label="Tomorrow's tasks">
+      <h3>Tomorrow's Tasks</h3>
+      <ul id="tomorrow-tasks-list" aria-live="polite"></ul>
+      <button id="tom-toggle-week" aria-label="Toggle tasks for week">Show Week</button>
+    </section>
+  </section>
+</main>
+
+<footer>
+  Made with ❤️ by <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">YourName</a>
+</footer>
+
+<script>
+// ====== Calendar ======
+const calendarMonthYear = document.getElementById('calendar-month-year');
+const calendarGrid = document.getElementById('calendar-grid');
+const prevMonthBtn = document.getElementById('prev-month');
+const nextMonthBtn = document.getElementById('next-month');
+const yearSelect = document.getElementById('year-select');
+
+let today = new Date();
+let currentMonth = today.getMonth();
+let currentYear = today.getFullYear();
+
+function populateYearSelect() {
+  for(let y = currentYear - 5; y <= currentYear + 5; y++) {
+    const option = document.createElement('option');
+    option.value = y;
+    option.textContent = y;
+    if (y === currentYear) option.selected = true;
+    yearSelect.appendChild(option);
+  }
+}
+
+function renderCalendar(month, year) {
+  calendarGrid.innerHTML = '';
+  calendarMonthYear.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+  
+  // Weekday headers
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  weekdays.forEach(day => {
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'calendar-day';
+    dayHeader.textContent = day;
+    calendarGrid.appendChild(dayHeader);
+  });
+  
+  // First day of month
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Fill blanks before first day
+  for(let i = 0; i < firstDay; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'calendar-day blank';
+    calendarGrid.appendChild(blank);
+  }
+
+  // Fill days
+  for(let d = 1; d <= daysInMonth; d++) {
+    const dayCell = document.createElement('div');
+    dayCell.className = 'calendar-day';
+    dayCell.textContent = d;
+    if (year === today.getFullYear() && month === today.getMonth() && d === today.getDate()) {
+      dayCell.style.backgroundColor = '#FF7F00';
+      dayCell.style.color = 'white';
+      dayCell.style.borderRadius = '50%';
+    }
+    calendarGrid.appendChild(dayCell);
+  }
+}
+
+prevMonthBtn.addEventListener('click', () => {
+  currentMonth--;
+  if(currentMonth < 0) {
+    currentMonth = 11;
+    currentYear--;
+    yearSelect.value = currentYear;
+  }
+  renderCalendar(currentMonth, currentYear);
+});
+
+nextMonthBtn.addEventListener('click', () => {
+  currentMonth++;
+  if(currentMonth > 11) {
+    currentMonth = 0;
+    currentYear++;
+    yearSelect.value = currentYear;
+  }
+  renderCalendar(currentMonth, currentYear);
+});
+
+yearSelect.addEventListener('change', () => {
+  currentYear = parseInt(yearSelect.value);
+  renderCalendar(currentMonth, currentYear);
+});
+
+populateYearSelect();
+renderCalendar(currentMonth, currentYear);
+
+// ====== Pomodoro Timer ======
+const pomodoroTimer = document.getElementById('pomodoro-timer');
+const pomStartBtn = document.getElementById('pom-start');
+const pomPauseBtn = document.getElementById('pom-pause');
+const pomResetBtn = document.getElementById('pom-reset');
+const decTimeBtn = document.getElementById('dec-time');
+const incTimeBtn = document.getElementById('inc-time');
+const pomDurationDisplay = document.getElementById('pom-duration-display');
+const muteSoundCheckbox = document.getElementById('mute-sound');
+const pomSoundRadios = document.querySelectorAll('input[name="pom-sound"]');
+
+let pomDuration = 25 * 60; // in seconds
+let pomTimer = null;
+let pomTimeLeft = pomDuration;
+let pomRunning = false;
+let selectedSound = 'bell';
+let muteSound = false;
+
+function updatePomodoroDisplay() {
+  const minutes = Math.floor(pomTimeLeft / 60);
+  const seconds = pomTimeLeft % 60;
+  pomodoroTimer.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+}
+
+function playSound() {
+  if(muteSound) return;
+  let audioSrc = '';
+  switch(selectedSound) {
+    case 'bell': audioSrc = 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg'; break;
+    case 'alarm': audioSrc = 'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg'; break;
+    case 'beep': audioSrc = 'https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'; break;
+  }
+  const audio = new Audio(audioSrc);
+  audio.play();
+}
+
+function startPomodoro() {
+  if(pomRunning) return;
+  pomRunning = true;
+  pomStartBtn.disabled = true;
+  pomPauseBtn.disabled = false;
+  pomTimer = setInterval(() => {
+    pomTimeLeft--;
+    updatePomodoroDisplay();
+    if(pomTimeLeft <= 0) {
+      clearInterval(pomTimer);
+      pomRunning = false;
+      playSound();
+      pomStartBtn.disabled = false;
+      pomPauseBtn.disabled = true;
+      pomTimeLeft = pomDuration;
+      updatePomodoroDisplay();
+    }
+  }, 1000);
+}
+
+function pausePomodoro() {
+  if(!pomRunning) return;
+  pomRunning = false;
+  pomStartBtn.disabled = false;
+  pomPauseBtn.disabled = true;
+  clearInterval(pomTimer);
+}
+
+function resetPomodoro() {
+  pomRunning = false;
+  clearInterval(pomTimer);
+  pomTimeLeft = pomDuration;
+  updatePomodoroDisplay();
+  pomStartBtn.disabled = false;
+  pomPauseBtn.disabled = true;
+}
+
+decTimeBtn.addEventListener('click', () => {
+  if(pomDuration > 60) {
+    pomDuration -= 60;
+    pomTimeLeft = pomDuration;
+    pomDurationDisplay.textContent = `${pomDuration / 60} min`;
+    updatePomodoroDisplay();
+  }
+});
+
+incTimeBtn.addEventListener('click', () => {
+  if(pomDuration < 60*60) {
+    pomDuration += 60;
+    pomTimeLeft = pomDuration;
+    pomDurationDisplay.textContent = `${pomDuration / 60} min`;
+    updatePomodoroDisplay();
+  }
+});
+
+pomStartBtn.addEventListener('click', startPomodoro);
+pomPauseBtn.addEventListener('click', pausePomodoro);
+pomResetBtn.addEventListener('click', resetPomodoro);
+
+pomSoundRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    selectedSound = radio.value;
+  });
+});
+muteSoundCheckbox.addEventListener('change', () => {
+  muteSound = muteSoundCheckbox.checked;
+});
+
+// ====== Productivity Pie Chart ======
+const prodCanvas = document.getElementById('prodCanvas');
+const prodCtx = prodCanvas.getContext('2d');
+const prodButtons = document.querySelectorAll('.prod-toggle button');
+
+const prodData = {
+  daily: { done: 40, doing: 35, todo: 25 },
+  weekly: { done: 55, doing: 25, todo: 20 },
+  monthly: { done: 65, doing: 20, todo: 15 }
+};
+
+function drawPieChart(data) {
+  const total = data.done + data.doing + data.todo;
+  let startAngle = -0.5 * Math.PI; // Start at top
+
+  prodCtx.clearRect(0, 0, prodCanvas.width, prodCanvas.height);
+
+  // Done slice (green)
+  const doneAngle = (data.done / total) * 2 * Math.PI;
+  prodCtx.fillStyle = '#4CAF50';
+  prodCtx.beginPath();
+  prodCtx.moveTo(prodCanvas.width / 2, prodCanvas.height / 2);
+  prodCtx.arc(prodCanvas.width / 2, prodCanvas.height / 2, prodCanvas.width / 2, startAngle, startAngle + doneAngle);
+  prodCtx.closePath();
+  prodCtx.fill();
+  startAngle += doneAngle;
+
+  // Doing slice (orange)
+  const doingAngle = (data.doing / total) * 2 * Math.PI;
+  prodCtx.fillStyle = '#FF9800';
+  prodCtx.beginPath();
+  prodCtx.moveTo(prodCanvas.width / 2, prodCanvas.height / 2);
+  prodCtx.arc(prodCanvas.width / 2, prodCanvas.height / 2, prodCanvas.width / 2, startAngle, startAngle + doingAngle);
+  prodCtx.closePath();
+  prodCtx.fill();
+  startAngle += doingAngle;
+
+  // To-do slice (gray)
+  const todoAngle = (data.todo / total) * 2 * Math.PI;
+  prodCtx.fillStyle = '#BDBDBD';
+  prodCtx.beginPath();
+  prodCtx.moveTo(prodCanvas.width / 2, prodCanvas.height / 2);
+  prodCtx.arc(prodCanvas.width / 2, prodCanvas.height / 2, prodCanvas.width / 2, startAngle, startAngle + todoAngle);
+  prodCtx.closePath();
+  prodCtx.fill();
+}
+
+prodButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    prodButtons.forEach(btn => {
+      btn.classList.remove('active');
+      btn.setAttribute('aria-selected', 'false');
+    });
+    button.classList.add('active');
+    button.setAttribute('aria-selected', 'true');
+    drawPieChart(prodData[button.dataset.range]);
+  });
+});
+
+// Initialize with daily data
+drawPieChart(prodData.daily);
+
+// ====== Task Management ======
+
+const taskForm = document.getElementById('task-form');
+const taskList = document.getElementById('task-list');
+const tagsList = document.getElementById('tags-list');
+const tomorrowTasksList = document.getElementById('tomorrow-tasks-list');
+const tomToggleWeekBtn = document.getElementById('tom-toggle-week');
+const teamTasksList = document.getElementById('team-tasks-list');
+const fullTaskViewBtn = document.getElementById('full-task-view-btn');
+
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+let showWeekTomorrow = false;
+
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function renderTasks() {
+  taskList.innerHTML = '';
+  const todayStr = new Date().toISOString().slice(0,10);
+  tasks.filter(t => t.dueDate === todayStr).forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = `${t.title} [${t.tag || 'No Tag'}]`;
+    taskList.appendChild(li);
+  });
+}
+
+function renderTomorrowTasks() {
+  tomorrowTasksList.innerHTML = '';
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().slice(0,10);
+  let filteredTasks;
+  if(showWeekTomorrow) {
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
+    filteredTasks = tasks.filter(t => {
+      const d = new Date(t.dueDate);
+      return d >= today && d <= nextWeek;
+    });
+  } else {
+    filteredTasks = tasks.filter(t => t.dueDate === tomorrowStr);
+  }
+  filteredTasks.forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = `${t.title} [${t.tag || 'No Tag'}]`;
+    tomorrowTasksList.appendChild(li);
+  });
+}
+
+function renderTeamTasks() {
+  teamTasksList.innerHTML = '';
+  tasks.filter(t => t.tag === 'Work').forEach(t => {
+    const li = document.createElement('li');
+    li.textContent = `${t.title}`;
+    teamTasksList.appendChild(li);
+  });
+}
+
+function renderTags() {
+  tagsList.innerHTML = '';
+  const uniqueTags = [...new Set(tasks.map(t => t.tag).filter(Boolean))];
+  uniqueTags.forEach(tag => {
+    const tagEl = document.createElement('div');
+    tagEl.className = 'tag';
+    tagEl.textContent = tag;
+    const removeBtn = document.createElement('span');
+    removeBtn.textContent = '×';
+    removeBtn.className = 'remove-tag';
+    removeBtn.title = `Remove tag ${tag} and its tasks`;
+    removeBtn.addEventListener('click', () => {
+      tasks = tasks.filter(t => t.tag !== tag);
+      saveTasks();
+      renderAll();
+    });
+    tagEl.appendChild(removeBtn);
+    tagsList.appendChild(tagEl);
+  });
+}
+
+function renderAll() {
+  renderTasks();
+  renderTomorrowTasks();
+  renderTeamTasks();
+  renderTags();
+}
+
+taskForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title = taskForm['task-title'].value.trim();
+  const desc = taskForm['task-desc'].value.trim();
+  const dueDate = taskForm['task-due-date'].value;
+  const tag = taskForm['task-tag'].value;
+
+  if(!title) return alert('Task title is required.');
+
+  tasks.push({ title, desc, dueDate, tag });
+  saveTasks();
+  renderAll();
+  taskForm.reset();
+});
+
+tomToggleWeekBtn.addEventListener('click', () => {
+  showWeekTomorrow = !showWeekTomorrow;
+  tomToggleWeekBtn.textContent = showWeekTomorrow ? 'Show Tomorrow' : 'Show Week';
+  renderTomorrowTasks();
+});
+
+fullTaskViewBtn.addEventListener('click', () => {
+  alert('Full tasks view coming soon!');
+});
+
+// Initial render
+renderAll();
+</script>
+
 </body>
 </html>
