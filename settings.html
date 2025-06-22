@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Settings - Taskify</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & base */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: #000;
+      background-color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h2 {
+      font-family: 'Merriweather', serif;
+      color: #0056b3; /* Blue accent */
+      margin-bottom: 20px;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      background: #f9faff; /* very light blue-ish */
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
+    }
+    #sidebar.collapsed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #sidebar a {
+      display: block;
+      margin: 12px 0;
+      text-decoration: none;
+      color: #000;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    #sidebar a:hover {
+      color: #0056b3;
+    }
+    #sidebar .spacer {
+      flex-grow: 1;
+    }
+
+    /* Main content wrapper */
+    #main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: #e6f0ff; /* very light blue */
+      color: #000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      box-sizing: border-box;
+    }
+
+    /* Content */
+    .content {
+      padding: 30px;
+      background: #fff;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    /* Form */
+    form {
+      max-width: 400px;
+      margin-top: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      color: #000;
+      background: #fff;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #0056b3;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 86, 179, 0.5);
+    }
+    button {
+      background-color: #0056b3;
+      color: white;
+      font-size: 16px;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #003d80;
+    }
+
+    /* Toggle button */
+    #toggle-btn {
+      cursor: pointer;
+      font-size: 24px;
+      user-select: none;
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <nav id="sidebar">
+    <a href="#">Dashboard</a>
+    <a href="#">Calendar</a>
+    <a href="#">Track</a>
+    <a href="#">Reports</a>
+    <div class="spacer"></div>
+    <a href="#">Help & Support</a>
+    <a href="#">Settings</a>
+  </nav>
+
+  <div id="main">
+    <header>
+      <div id="toggle-btn" title="Toggle sidebar">☰</div>
+      <div>
+        Hi, Kim Namjoon<br />
+        <small style="font-family: 'Inter', sans-serif; font-weight: 400; font-size: 14px; color: #444;">
+          "Stay consistent, stay productive."
+        </small>
+      </div>
+      <div title="Notifications" style="font-size: 20px; color: #0056b3;">
+        🔔3
+      </div>
+    </header>
+
+    <div class="content">
+      <h2>User Profile</h2>
+      <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" value="Kim Namjoon" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" value="password123" />
+
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggle-btn');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
+  </script>
+</body>
+</html>
