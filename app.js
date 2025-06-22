@@ -1,234 +1,441 @@
-// ======= GLOBAL STATE =======
-const state = {
-  tasks: [
-    { id: 1, name: "Sample Task 1", done: false, priority: false, tag: "work", date: "2025-06-22", time: "14:00", collaborator: "Jana", notes: "", status: "to do" },
-    { id: 2, name: "Sample Task 2", done: true, priority: true, tag: "self", date: "2025-06-22", time: "16:00", collaborator: "", notes: "", status: "done" }
-  ],
-  habits: [
-    { id: 1, name: "Morning Meditation", startDate: "2025-01-01", tag: "self", done: false },
-    { id: 2, name: "Drink Water", startDate: "2025-03-01", tag: "health", done: false }
-  ],
-  events: [
-    { id: 1, name: "Jana's Birthday", date: "2025-06-25", tag: "family" },
-    { id: 2, name: "Project Deadline", date: "2025-06-30", tag: "work" }
-  ],
-  notifications: [
-    { id: 1, text: "Welcome back! Let's get productive today.", date: new Date() }
-  ],
-  streak: 0,
-  pomodoro: {
-    defaultMinutes: 25,
-    currentMinutes: 25,
-    isRunning: false,
-    timerId: null,
-    soundOn: false,
-    soundType: 'sea'
-  },
-  quotes: [
-    "Productivity is never an accident. It is always the result of a commitment to excellence.",
-    "Don't watch the clock; do what it does. Keep going.",
-    "The future depends on what you do today.",
-    "It's not always that we need to do more but rather that we need to focus on less.",
-    "Your limitation—it's only your imagination.",
-    "Push yourself, because no one else is going to do it for you.",
-    "Great things never come from comfort zones."
-  ],
-  selectedQuoteIndex: new Date().getDay() % 7 // for daily quote
-};
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize app with sample data
+    let appData = {
+        tasks: [
+            { 
+                id: 1, 
+                name: "Complete project proposal", 
+                completed: false, 
+                date: new Date().toISOString().split('T')[0], // Today's date
+                time: "15:00",
+                priority: "high", 
+                tag: "work", 
+                collaborator: "", 
+                notes: "Due by EOD" 
+            },
+            { 
+                id: 2, 
+                name: "Morning workout", 
+                completed: true, 
+                date: new Date().toISOString().split('T')[0], // Today's date
+                time: "08:00",
+                priority: "normal", 
+                tag: "health", 
+                collaborator: "", 
+                notes: "" 
+            },
+            { 
+                id: 3, 
+                name: "Dentist appointment", 
+                completed: false, 
+                date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow's date
+                time: "10:30",
+                priority: "high", 
+                tag: "personal", 
+                collaborator: "", 
+                notes: "Bring insurance card" 
+            }
+        ],
+        events: [],
+        habits: [],
+        tags: [
+            { name: "work", color: "#FFA500" },
+            { name: "personal", color: "#4CAF50" },
+            { name: "health", color: "#2196F3" }
+        ],
+        productivity: {
+            done: 30,
+            doing: 20,
+            todo: 50
+        }
+    };
 
-// ======= DOM ELEMENTS =======
-const quoteEl = document.getElementById('quote-of-the-day');
-const notificationsBadge = document.getElementById('notifications-badge');
-const notificationsList = document.getElementById('notifications-list');
-const notificationsContainer = document.getElementById('notifications');
-const streakCountEl = document.getElementById('streak-count');
+    // DOM Elements
+    const elements = {
+        todayTasksList: document.getElementById('today-tasks'),
+        tomorrowTasksList: document.getElementById('tomorrow-tasks'),
+        taskForm: document.getElementById('task-form'),
+        editTaskForm: document.getElementById('edit-task-form'),
+        editTaskSelect: document.getElementById('edit-task-select'),
+        deleteTaskBtn: document.getElementById('delete-task'),
+        profileModal: document.getElementById('profile-modal'),
+        aboutModal: document.getElementById('about-modal'),
+        profileLink: document.getElementById('profile-link'),
+        aboutLink: document.getElementById('about-link'),
+        closeButtons: document.querySelectorAll('.close'),
+        notificationBar: document.querySelector('.notification-bar'),
+        timerDisplay: document.getElementById('timer-display'),
+        startTimerBtn: document.getElementById('start-timer'),
+        pauseTimerBtn: document.getElementById('pause-timer'),
+        resetTimerBtn: document.getElementById('reset-timer'),
+        timerMinutesInput: document.getElementById('timer-minutes'),
+        pieChart: document.getElementById('pie-chart')
+    };
 
-const calendarEl = document.getElementById('calendar');
-const pomodoroMinutesEl = document.getElementById('pomodoro-minutes');
-const pomodoroStartBtn = document.getElementById('pomodoro-start');
-const pomodoroPauseBtn = document.getElementById('pomodoro-pause');
-const pomodoroResetBtn = document.getElementById('pomodoro-reset');
-const pomodoroSoundToggle = document.getElementById('pomodoro-sound-toggle');
-const pomodoroSoundSelect = document.getElementById('pomodoro-sound-select');
+    // Timer variables
+    let timerInterval;
+    let timerSeconds = 25 * 60;
+    let isTimerRunning = false;
 
-const productivityPieEl = document.getElementById('productivity-pie');
-const productivityToggleBtns = document.querySelectorAll('.productivity-toggle-btn');
+    // Initialize the app
+    init();
 
-const todayTasksList = document.getElementById('today-tasks-list');
-const upcomingEventsList = document.getElementById('upcoming-events-list');
-const habitTrackerList = document.getElementById('habit-tracker-list');
+    function init() {
+        // Update notification bar styling
+        elements.notificationBar.style.backgroundColor = '#f0f0f0';
+        elements.notificationBar.style.color = '#000';
 
-const addTaskBtn = document.getElementById('add-task-btn');
-const addTaskForm = document.getElementById('add-task-form');
-
-const editTaskForm = document.getElementById('edit-task-form');
-const tomorrowTasksList = document.getElementById('tomorrow-tasks-list');
-const tomorrowWeekToggleBtn = document.getElementById('tomorrow-week-toggle');
-
-const teamTasksList = document.getElementById('team-tasks-list');
-const taskManagerTagsList = document.getElementById('task-manager-tags-list');
-
-// ======= INITIALIZATION =======
-
-function init() {
-  // Show daily quote
-  quoteEl.textContent = state.quotes[state.selectedQuoteIndex];
-
-  // Show streak (load from localStorage)
-  loadStreak();
-
-  // Show notifications count
-  updateNotifications();
-
-  // Render calendar
-  renderCalendar(new Date());
-
-  // Render productivity pie (daily default)
-  renderProductivityPie('daily');
-
-  // Render task lists
-  renderTodayTasks();
-  renderUpcomingEvents();
-  renderHabitTracker();
-  renderTomorrowTasks();
-  renderTeamTasks();
-  renderTaskManagerTags();
-
-  // Attach event listeners
-  setupEventListeners();
-
-  // Update streak on visit
-  updateStreak();
-}
-
-// ======= STREAK LOGIC =======
-function loadStreak() {
-  const streakData = localStorage.getItem('streakData');
-  if(streakData){
-    const parsed = JSON.parse(streakData);
-    const lastVisit = new Date(parsed.lastVisit);
-    const today = new Date();
-    // Check if yesterday or today
-    const diffDays = Math.floor((today - lastVisit) / (1000*60*60*24));
-    if(diffDays === 1){
-      state.streak = parsed.streak + 1;
-    } else if(diffDays > 1){
-      state.streak = 1; // Reset streak
-    } else {
-      state.streak = parsed.streak; // same day, no change
+        renderTasks();
+        setupEventListeners();
+        updateTaskCounts();
+        populateEditTaskDropdown();
+        setupPomodoroTimer();
+        renderProductivityChart();
     }
-  } else {
-    state.streak = 1; // first visit
-  }
-  streakCountEl.textContent = state.streak;
-  localStorage.setItem('streakData', JSON.stringify({ streak: state.streak, lastVisit: new Date() }));
-}
 
-function updateStreak() {
-  streakCountEl.textContent = state.streak;
-}
+    function renderTasks() {
+        // Clear existing tasks
+        elements.todayTasksList.innerHTML = '';
+        elements.tomorrowTasksList.innerHTML = '';
 
-// ======= NOTIFICATIONS =======
-function updateNotifications() {
-  // Set badge count
-  notificationsBadge.textContent = state.notifications.length;
+        // Get today's and tomorrow's dates in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-  // Render notifications list
-  notificationsList.innerHTML = '';
-  state.notifications.forEach(note => {
-    const div = document.createElement('div');
-    div.textContent = note.text;
-    div.style.padding = '5px 0';
-    div.style.borderBottom = '1px solid #ddd';
-    notificationsList.appendChild(div);
-  });
-}
+        // Filter and render today's tasks
+        const todaysTasks = appData.tasks.filter(task => task.date === today);
+        todaysTasks.forEach(task => {
+            const taskElement = createTaskElement(task);
+            elements.todayTasksList.appendChild(taskElement);
+        });
 
-notificationsContainer.addEventListener('click', () => {
-  notificationsList.classList.toggle('show');
+        // Filter and render tomorrow's tasks
+        const tomorrowsTasks = appData.tasks.filter(task => task.date === tomorrow);
+        tomorrowsTasks.forEach(task => {
+            const taskElement = createTaskElement(task);
+            elements.tomorrowTasksList.appendChild(taskElement);
+        });
+
+        // Initialize Sortable for drag and drop on both lists
+        new Sortable(elements.todayTasksList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: updateTaskOrder
+        });
+
+        new Sortable(elements.tomorrowTasksList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onEnd: updateTaskOrder
+        });
+    }
+
+    function createTaskElement(task) {
+        const li = document.createElement('li');
+        li.className = `task-item ${task.priority}-priority`;
+        li.dataset.id = task.id;
+
+        // Format time display if it exists
+        const timeDisplay = task.time ? ` <small>(${task.time})</small>` : '';
+
+        li.innerHTML = `
+            <input type="checkbox" ${task.completed ? 'checked' : ''}>
+            <label>${task.name}${timeDisplay}</label>
+            <span class="task-tag ${task.tag}">${task.tag}</span>
+            <button class="edit-btn">✏️</button>
+            <button class="delete-btn">🗑️</button>
+            ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
+        `;
+
+        // Add event listeners
+        li.querySelector('.edit-btn').addEventListener('click', () => openEditModal(task.id));
+        li.querySelector('.delete-btn').addEventListener('click', () => deleteTask(task.id));
+        li.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+            toggleTaskComplete(task.id, e.target.checked);
+            // Update the task element to reflect completion status
+            if (e.target.checked) {
+                li.querySelector('label').style.textDecoration = 'line-through';
+                li.style.opacity = '0.7';
+            } else {
+                li.querySelector('label').style.textDecoration = 'none';
+                li.style.opacity = '1';
+            }
+            updateTaskCounts();
+        });
+
+        // Style completed tasks
+        if (task.completed) {
+            li.querySelector('label').style.textDecoration = 'line-through';
+            li.style.opacity = '0.7';
+        }
+
+        return li;
+    }
+
+    function setupEventListeners() {
+        // Add new task
+        elements.taskForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const taskName = document.getElementById('task-name').value.trim();
+            if (!taskName) return; // Don't add empty tasks
+            
+            const newTask = {
+                id: Date.now(), // Simple unique ID
+                name: taskName,
+                date: document.getElementById('task-date').value || new Date().toISOString().split('T')[0],
+                time: document.getElementById('task-time').value || '',
+                priority: document.getElementById('task-priority').value,
+                tag: document.getElementById('task-tag').value,
+                collaborator: document.getElementById('task-collaborator').value,
+                notes: document.getElementById('task-notes').value,
+                completed: false
+            };
+
+            appData.tasks.push(newTask);
+            renderTasks();
+            populateEditTaskDropdown();
+            updateTaskCounts();
+            this.reset();
+            
+            // Collapse the add task form after submission
+            document.querySelector('.add-task .collapsible-header').click();
+        });
+
+        // Edit task form
+        elements.editTaskForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const taskId = parseInt(elements.editTaskSelect.value);
+            if (isNaN(taskId)) return;
+            updateTask(taskId);
+        });
+
+        // Delete task button
+        elements.deleteTaskBtn.addEventListener('click', function() {
+            const taskId = parseInt(elements.editTaskSelect.value);
+            if (isNaN(taskId)) return;
+            deleteTask(taskId);
+            elements.editTaskForm.reset();
+        });
+
+        // Modal controls
+        elements.profileLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            elements.profileModal.style.display = 'block';
+        });
+
+        elements.aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            elements.aboutModal.style.display = 'block';
+        });
+
+        elements.closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target === elements.profileModal) {
+                elements.profileModal.style.display = 'none';
+            }
+            if (e.target === elements.aboutModal) {
+                elements.aboutModal.style.display = 'none';
+            }
+        });
+
+        // Collapsible sections
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', function() {
+                this.parentElement.classList.toggle('active');
+            });
+        });
+    }
+
+    function populateEditTaskDropdown() {
+        elements.editTaskSelect.innerHTML = '<option value="">Select task to edit</option>';
+        appData.tasks.forEach(task => {
+            const option = document.createElement('option');
+            option.value = task.id;
+            option.textContent = `${task.name} (${task.date})`;
+            elements.editTaskSelect.appendChild(option);
+        });
+    }
+
+    function openEditModal(taskId) {
+        const task = appData.tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        // Populate the edit form
+        elements.editTaskSelect.value = taskId;
+        document.getElementById('edit-task-name').value = task.name;
+        document.getElementById('edit-task-date').value = task.date;
+        document.getElementById('edit-task-time').value = task.time;
+        document.getElementById('edit-task-tag').value = task.tag;
+        document.getElementById('edit-task-priority').value = task.priority;
+        document.getElementById('edit-task-collaborator').value = task.collaborator;
+        document.getElementById('edit-task-notes').value = task.notes;
+        
+        // Open the edit task section if it's collapsed
+        const editSection = document.querySelector('.edit-task');
+        if (!editSection.classList.contains('active')) {
+            editSection.classList.add('active');
+        }
+    }
+
+    function updateTask(taskId) {
+        const taskIndex = appData.tasks.findIndex(t => t.id === taskId);
+        if (taskIndex === -1) return;
+
+        appData.tasks[taskIndex] = {
+            ...appData.tasks[taskIndex],
+            name: document.getElementById('edit-task-name').value,
+            date: document.getElementById('edit-task-date').value,
+            time: document.getElementById('edit-task-time').value,
+            tag: document.getElementById('edit-task-tag').value,
+            priority: document.getElementById('edit-task-priority').value,
+            collaborator: document.getElementById('edit-task-collaborator').value,
+            notes: document.getElementById('edit-task-notes').value
+        };
+
+        renderTasks();
+        populateEditTaskDropdown();
+        updateTaskCounts();
+    }
+
+    function deleteTask(taskId) {
+        appData.tasks = appData.tasks.filter(task => task.id !== taskId);
+        renderTasks();
+        populateEditTaskDropdown();
+        updateTaskCounts();
+    }
+
+    function toggleTaskComplete(taskId, isCompleted) {
+        const task = appData.tasks.find(t => t.id === taskId);
+        if (task) {
+            task.completed = isCompleted;
+        }
+    }
+
+    function updateTaskOrder(event) {
+        // This function would handle reordering tasks if you want to persist the order
+        // Currently, the order is only visual and won't persist after refresh
+        // You could implement this by adding an 'order' property to tasks and updating it here
+    }
+
+    function updateTaskCounts() {
+        const today = new Date().toISOString().split('T')[0];
+        const todaysTasks = appData.tasks.filter(task => task.date === today);
+        const totalTasks = todaysTasks.length;
+        const completedTasks = todaysTasks.filter(task => task.completed).length;
+        const pendingTasks = totalTasks - completedTasks;
+
+        // Update UI elements
+        document.getElementById('pending-count').textContent = pendingTasks;
+        document.getElementById('notification-count').textContent = pendingTasks > 0 ? pendingTasks : 0;
+
+        // Update progress
+        const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        document.getElementById('goal-progress-fill').style.width = `${progressPercentage}%`;
+        document.getElementById('goal-percentage').textContent = `${progressPercentage}%`;
+    }
+
+    function setupPomodoroTimer() {
+        // Update timer display
+        updateTimerDisplay();
+
+        // Event listeners for timer controls
+        elements.startTimerBtn.addEventListener('click', startTimer);
+        elements.pauseTimerBtn.addEventListener('click', pauseTimer);
+        elements.resetTimerBtn.addEventListener('click', resetTimer);
+        elements.timerMinutesInput.addEventListener('change', function() {
+            timerSeconds = this.value * 60;
+            updateTimerDisplay();
+        });
+    }
+
+    function startTimer() {
+        if (!isTimerRunning) {
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    alert("Time's up! Take a short break.");
+                }
+            }, 1000);
+        }
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        timerSeconds = elements.timerMinutesInput.value * 60;
+        updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timerSeconds / 60);
+        const seconds = timerSeconds % 60;
+        elements.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function renderProductivityChart() {
+        const ctx = elements.pieChart.getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Done', 'Doing', 'To Do'],
+                datasets: [{
+                    data: [appData.productivity.done, appData.productivity.doing, appData.productivity.todo],
+                    backgroundColor: [
+                        '#FFD700', // Gold for Done
+                        '#FFA500', // Orange for Doing
+                        '#FFE0B2'  // Light orange for To Do
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Update legend text
+        document.getElementById('done-text').textContent = `Done (${appData.productivity.done}%)`;
+        document.getElementById('doing-text').textContent = `Doing (${appData.productivity.doing}%)`;
+        document.getElementById('todo-text').textContent = `To Do (${appData.productivity.todo}%)`;
+    }
+
+    // Initialize happiness stars
+    const stars = document.querySelectorAll('.happiness-stars i');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.dataset.value);
+            stars.forEach((s, index) => {
+                if (index < value) {
+                    s.classList.add('fas');
+                    s.classList.remove('far');
+                } else {
+                    s.classList.add('far');
+                    s.classList.remove('fas');
+                }
+            });
+        });
+    });
 });
 
-// ======= CALENDAR =======
-function renderCalendar(date) {
-  // Simple calendar month view with red circle on today's date
-  // For demo, will just show month and year
-  const year = date.getFullYear();
-  const month = date.getMonth();
-
-  calendarEl.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-      <button id="prev-month-btn">&lt;</button>
-      <div>${date.toLocaleString('default', { month: 'long' })} ${year}</div>
-      <button id="next-month-btn">&gt;</button>
-      <select id="year-dropdown">
-        ${Array.from({length: 10}, (_, i) => `<option value="${year - 5 + i}" ${year - 5 + i === year ? 'selected' : ''}>${year - 5 + i}</option>`).join('')}
-      </select>
-    </div>
-  `;
-
-  // TODO: Add days grid with red circle on today's date
-
-  // Attach month buttons listeners
-  document.getElementById('prev-month-btn').onclick = () => {
-    let newDate = new Date(date);
-    newDate.setMonth(month - 1);
-    renderCalendar(newDate);
-  };
-
-  document.getElementById('next-month-btn').onclick = () => {
-    let newDate = new Date(date);
-    newDate.setMonth(month + 1);
-    renderCalendar(newDate);
-  };
-
-  document.getElementById('year-dropdown').onchange = (e) => {
-    let newYear = parseInt(e.target.value);
-    let newDate = new Date(date);
-    newDate.setFullYear(newYear);
-    renderCalendar(newDate);
-  };
-}
-
-// ======= POMODORO TIMER =======
-// For brevity, only basic logic without actual timer here
-
-let pomodoroTimer = null;
-let pomodoroRemaining = state.pomodoro.currentMinutes * 60;
-
-function startPomodoro() {
-  if(pomodoroTimer) return;
-  pomodoroTimer = setInterval(() => {
-    if(pomodoroRemaining <= 0) {
-      clearInterval(pomodoroTimer);
-      pomodoroTimer = null;
-      alert("Pomodoro complete!");
-      pomodoroRemaining = state.pomodoro.currentMinutes * 60;
-      updatePomodoroDisplay();
-      return;
-    }
-    pomodoroRemaining--;
-    updatePomodoroDisplay();
-  }, 1000);
-}
-
-function pausePomodoro() {
-  clearInterval(pomodoroTimer);
-  pomodoroTimer = null;
-}
-
-function resetPomodoro() {
-  pausePomodoro();
-  pomodoroRemaining = state.pomodoro.currentMinutes * 60;
-  updatePomodoroDisplay();
-}
-
-function updatePomodoroDisplay() {
-  let minutes = Math.floor(pomodoroRemaining / 60);
-  let seconds = pomodoroRemaining % 60;
-  pomodoroMinutesEl.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-}
-
-// Attach pomodoro button handlers
-pomodoroStartBtn.addEventListener('click', startPomodoro);
-pomodoroPauseBtn.addEventListener('click', pausePomodoro);
-pomodoroResetBtn.addEvent
