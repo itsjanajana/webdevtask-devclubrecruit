@@ -5,46 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About Us - The To-Do List</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
 </head>
 <body>
-
-  <header>
+  <!-- HEADER -->
+  <header id="header">
     <div class="header-left">
-      <h1>📝 The To-Do List</h1>
+      <div id="logo">📝✒️</div>
+      <div id="site-name">The To-Do List</div>
     </div>
-    <div class="header-center">
-      <p id="quote"></p>
-    </div>
-    <div class="header-right">
+    <div class="header-center" id="daily-quote">“Built to help you stay organized”</div>
+    <nav class="header-right">
       <a href="profile.html">Profile</a>
       <a href="about.html">About Us</a>
       <a href="index.html">View Tasks</a>
-    </div>
+    </nav>
   </header>
 
-  <div class="sub-header">
-    <div class="notifications">
-      🔔 Notifications (<span id="notification-count">0</span>)
-      <div id="notification-list" class="hidden"></div>
-    </div>
-    <div class="streak">
-      🔥 Streak: <span id="streak-count">0</span> days
-    </div>
-  </div>
+  <main id="main-content" class="about-main">
+    <section class="card about-card">
+      <h1>About Us</h1>
 
-  <main class="container about-page">
-    <h2>About Us</h2>
-    <p><strong>The To-Do List</strong></p>
-    <div class="about-card" style="border: 2px solid black; padding: 20px; max-width: 400px;">
-      <p>Built by Anjana CS24B2014</p>
-      <p>Built for the Developer's Club</p>
-      <p>Built with ❤️ </p>
-    </div>
+      <div class="about-info-box">
+        <p><strong>Built by Anjana CS24B2014</strong><br />
+           Built for the Developer's Club<br />
+           Built with ❤️.</p>
+
+        <h2>Difficulties faced:</h2>
+        <ul>
+          <li>Drag-and-drop logic and hover parts</li>
+          <li>Managing animations & transitions</li>
+          <li>Aligning all sections</li>
+          <li>Making it all connected and accurate</li>
+        </ul>
+
+        <h2>Enjoyed doing:</h2>
+        <ul>
+          <li>Adding features like Pomodoro, Upcoming Events, Reminders etc.</li>
+          <li>Detailing each part and editing until satisfied</li>
+          <li>Seeing everything come together finally was very fulfilling</li>
+        </ul>
+      </div>
+    </section>
   </main>
 
-  <footer>
+  <footer id="footer">
     © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
   </footer>
-
 </body>
 </html>
