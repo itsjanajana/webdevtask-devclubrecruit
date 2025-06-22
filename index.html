@@ -2,134 +2,268 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The To-Do List</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Poppins font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+  <!-- Chart.js for pie charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
   <!-- HEADER -->
-  <header>
+  <header id="header">
     <div class="header-left">
-      <h1>📝 The To-Do List</h1>
+      <div id="logo">📝✒️</div>
+      <div id="site-name">The To-Do List</div>
     </div>
-    <div class="header-center">
-      <p id="quote"></p>
-    </div>
-    <div class="header-right">
+    <div class="header-center" id="daily-quote">“Productivity is never an accident.”</div>
+    <nav class="header-right">
       <a href="profile.html">Profile</a>
       <a href="about.html">About Us</a>
       <a href="index.html">View Tasks</a>
-    </div>
+    </nav>
   </header>
 
-  <!-- Thin bar for streak + notifications -->
-  <div class="sub-header">
-    <div class="notifications">
-      🔔 Notifications (<span id="notification-count">0</span>)
-      <div id="notification-list" class="hidden"></div>
+  <!-- STREAK + NOTIFICATIONS BAR -->
+  <div id="streak-notification-bar">
+    <div id="notifications-container">
+      <button id="notification-btn">Notifications <span id="notification-count">1</span></button>
+      <div id="notification-list" class="hidden">
+        <ul>
+          <li>Welcome back, Anjana! Let’s get productive today.</li>
+          <li>Reminder: Task “Finish report” in 15 minutes at 5:45 PM.</li>
+        </ul>
+      </div>
     </div>
-    <div class="streak">
-      🔥 Streak: <span id="streak-count">0</span> days
+    <div id="streak-container">
+      Streak: <span id="streak-count">3</span> days
     </div>
   </div>
 
   <!-- MAIN CONTENT -->
-  <main class="container">
-    <!-- LEFT COLUMN -->
-    <section class="left-column">
-      <div id="calendar"></div>
+  <main id="main-content">
+    <!-- Left Column -->
+    <section id="left-column">
+      <div id="calendar-card" class="card">
+        <h2>Calendar</h2>
+        <div id="calendar-controls">
+          <button id="prev-month">&#8592;</button>
+          <span id="calendar-month-year">June 2025</span>
+          <button id="next-month">&#8594;</button>
+          <select id="year-select"></select>
+        </div>
+        <div id="calendar"></div>
+      </div>
 
-      <div id="pomodoro">
-        <h3>Pomodoro Timer</h3>
-        <p id="timer">25:00</p>
-        <button id="start">Start</button>
-        <button id="pause">Pause</button>
-        <button id="reset">Reset</button>
-        <label>
-          🔊 Sound 
-          <input type="checkbox" id="sound-toggle" />
-        </label>
-        <div id="sound-options" class="hidden">
-          <button data-sound="rain">Rain</button>
-          <button data-sound="sea">Sea</button>
-          <button data-sound="forest">Forest</button>
+      <div id="pomodoro-card" class="card">
+        <h2>Pomodoro Timer</h2>
+        <div id="pomodoro-timer">
+          <canvas id="pomodoro-clock" width="150" height="150"></canvas>
+          <div id="pomodoro-controls">
+            <button id="pomodoro-start">Start</button>
+            <button id="pomodoro-pause">Pause</button>
+            <button id="pomodoro-reset">Reset</button>
+          </div>
+          <div id="pomodoro-sound-options">
+            <label><input type="checkbox" id="sound-toggle" /> Sound</label>
+            <select id="sound-choice" disabled>
+              <option value="none">None</option>
+              <option value="sea">Sea</option>
+              <option value="rain">Rain</option>
+              <option value="forest">Forest</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      <div id="productivity">
-        <h3>Productivity</h3>
-        <canvas id="productivity-chart" width="200" height="200"></canvas>
-        <div class="productivity-buttons">
-          <button id="daily">Daily</button>
-          <button id="weekly">Weekly</button>
-          <button id="monthly">Monthly</button>
+      <div id="productivity-card" class="card">
+        <h2>Productivity</h2>
+        <canvas id="productivity-pie" width="200" height="200"></canvas>
+        <div id="productivity-toggle">
+          <button data-view="daily" class="active">Daily</button>
+          <button data-view="weekly">Weekly</button>
+          <button data-view="monthly">Monthly</button>
+        </div>
+        <div id="legend">
+          <span><span class="legend-box done"></span> Done</span>
+          <span><span class="legend-box doing"></span> Doing</span>
+          <span><span class="legend-box todo"></span> To Do</span>
         </div>
       </div>
     </section>
 
-    <!-- CENTER COLUMN -->
-    <section class="center-column">
-      <div id="today-tasks">
-        <h3>Today's Tasks</h3>
-        <ul id="task-list"></ul>
+    <!-- Center Column -->
+    <section id="center-column">
+      <div id="today-tasks-card" class="card">
+        <h2>Today's Tasks</h2>
+        <ul id="today-task-list" class="task-list">
+          <li draggable="true" class="task doing" data-id="1">
+            <input type="checkbox" /> Finish project proposal <span class="tag school">School</span>
+          </li>
+          <li draggable="true" class="task todo" data-id="2">
+            <input type="checkbox" /> Buy groceries <span class="tag self">Self</span>
+          </li>
+          <li draggable="true" class="task done" data-id="3">
+            <input type="checkbox" checked disabled /> Email client <span class="tag work">Work</span>
+          </li>
+        </ul>
+        <button id="view-all-tasks">View All Tasks</button>
       </div>
 
-      <div id="upcoming-events">
-        <h3>Upcoming Events</h3>
-        <ul id="event-list"></ul>
+      <div id="upcoming-events-card" class="card">
+        <h2>Upcoming Events</h2>
+        <ul id="upcoming-events-list" class="event-list">
+          <li>
+            <strong>Mom's Birthday</strong> <span class="subtitle">in 3 days</span> <span class="tag family">Family</span>
+          </li>
+          <li>
+            <strong>Project Deadline</strong> <span class="subtitle">in 5 days</span> <span class="tag work">Work</span>
+          </li>
+        </ul>
+        <button id="add-event-btn">Add Event</button>
       </div>
 
-      <div id="habit-tracker">
-        <h3>Habit Tracker</h3>
-        <ul id="habit-list"></ul>
+      <div id="habit-tracker-card" class="card">
+        <h2>Habit Tracker</h2>
+        <ul id="habit-list" class="habit-list">
+          <li class="habit">
+            <input type="checkbox" /> Meditation <br />
+            <small>Since 01/01/2025</small> <span class="tag self">Self</span>
+          </li>
+          <li class="habit">
+            <input type="checkbox" /> Read for 30 minutes <br />
+            <small>Since 15/03/2025</small> <span class="tag self">Self</span>
+          </li>
+        </ul>
+        <button id="add-habit-btn">Add Habit</button>
       </div>
     </section>
 
-    <!-- RIGHT COLUMN -->
-    <section class="right-column">
-      <div id="add-task">
-        <button id="add-task-btn">Add Task</button>
-        <div id="add-task-form" class="hidden">
-          <input type="text" id="task-name" placeholder="Task name" required />
-          <input type="date" id="task-date" />
-          <input type="time" id="task-time" />
-          <input type="text" id="task-tag" placeholder="Tag" />
-          <textarea id="task-notes" placeholder="Notes"></textarea>
-          <button id="submit-task">Submit</button>
-        </div>
+    <!-- Right Column -->
+    <section id="right-column">
+      <div id="add-task-card" class="card">
+        <h2>Add Task</h2>
+        <button id="expand-add-task">+</button>
+        <form id="add-task-form" class="hidden">
+          <label>
+            Task Name*:
+            <input type="text" id="task-name-input" required />
+          </label>
+          <label>
+            Date:
+            <input type="date" id="task-date-input" />
+          </label>
+          <label>
+            Time:
+            <input type="time" id="task-time-input" />
+          </label>
+          <label>
+            Tag:
+            <select id="task-tag-select">
+              <option value="school">School</option>
+              <option value="family">Family</option>
+              <option value="self">Self</option>
+              <option value="work">Work</option>
+            </select>
+          </label>
+          <label>
+            Collaborator:
+            <input type="text" id="task-collaborator-input" placeholder="Name" />
+          </label>
+          <label>
+            Notes:
+            <textarea id="task-notes-input" rows="3"></textarea>
+          </label>
+          <button type="submit">Add Task</button>
+        </form>
       </div>
 
-      <div id="edit-task">
-        <button id="edit-task-btn">Edit Task</button>
-        <div id="edit-task-form" class="hidden">
-          <p>To be implemented: list of tasks to edit</p>
-        </div>
+      <div id="edit-task-card" class="card">
+        <h2>Edit Task</h2>
+        <button id="expand-edit-task">Edit</button>
+        <form id="edit-task-form" class="hidden">
+          <label>
+            Select Task:
+            <select id="edit-task-select"></select>
+          </label>
+          <label>
+            Task Name*:
+            <input type="text" id="edit-task-name" required />
+          </label>
+          <label>
+            Date:
+            <input type="date" id="edit-task-date" />
+          </label>
+          <label>
+            Time:
+            <input type="time" id="edit-task-time" />
+          </label>
+          <label>
+            Tag:
+            <select id="edit-task-tag">
+              <option value="school">School</option>
+              <option value="family">Family</option>
+              <option value="self">Self</option>
+              <option value="work">Work</option>
+            </select>
+          </label>
+          <label>
+            Collaborator:
+            <input type="text" id="edit-task-collaborator" placeholder="Name" />
+          </label>
+          <label>
+            Notes:
+            <textarea id="edit-task-notes" rows="3"></textarea>
+          </label>
+          <button type="submit">Save Changes</button>
+        </form>
       </div>
 
-      <div id="tomorrow-tasks">
-        <h3>Tomorrow's Tasks</h3>
-        <ul id="tomorrow-list"></ul>
-        <button id="week-view">View Week</button>
+      <div id="tomorrow-tasks-card" class="card">
+        <h2>Tomorrow's Tasks</h2>
+        <ul id="tomorrow-task-list" class="task-list">
+          <li>
+            <input type="checkbox" /> Prepare presentation <span class="tag work">Work</span>
+          </li>
+          <li>
+            <input type="checkbox" /> Gym session <span class="tag self">Self</span>
+          </li>
+        </ul>
+        <button id="toggle-week-view">Toggle Week View</button>
       </div>
 
-      <div id="team-tasks">
-        <h3>Team Tasks</h3>
-        <ul id="team-list"></ul>
+      <div id="team-tasks-card" class="card">
+        <h2>Team Tasks</h2>
+        <ul id="team-task-list" class="task-list">
+          <li>
+            <input type="checkbox" /> Update website <span class="tag team">Team</span> <em>(Assigned to Mike)</em>
+          </li>
+          <li>
+            <input type="checkbox" /> Test app features <span class="tag team">Team</span> <em>(Assigned to Sarah)</em>
+          </li>
+        </ul>
       </div>
 
-      <div id="task-manager">
-        <h3>Task Manager</h3>
-        <p>To be implemented: tags, drag & drop</p>
+      <div id="task-manager-card" class="card">
+        <h2>Task Manager - Tags</h2>
+        <ul id="tag-list" class="tag-list">
+          <li draggable="true" class="tag-item school" data-tag="school">School <span class="color-picker" style="background-color:#FFB347;"></span></li>
+          <li draggable="true" class="tag-item family" data-tag="family">Family <span class="color-picker" style="background-color:#FFD700;"></span></li>
+          <li draggable="true" class="tag-item self" data-tag="self">Self <span class="color-picker" style="background-color:#90EE90;"></span></li>
+          <li draggable="true" class="tag-item work" data-tag="work">Work <span class="color-picker" style="background-color:#6495ED;"></span></li>
+          <li draggable="true" class="tag-item team" data-tag="team">Team <span class="color-picker" style="background-color:#FF69B4;"></span></li>
+        </ul>
+        <button id="add-tag-btn">Add Tag</button>
       </div>
     </section>
   </main>
 
   <!-- FOOTER -->
-  <footer>
+  <footer id="footer">
     © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
