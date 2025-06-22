@@ -3,206 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About Us - The To-Do List</title>
+  <title>Help & Support - Taskify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter&display=swap" rel="stylesheet" />
   <style>
-    /* Reset and base */
-    * {
-      box-sizing: border-box;
-    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #FF7F00;
+      font-family: 'Inter', sans-serif;
       color: #000;
+      background-color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: row;
+    }
+    #sidebar {
+      background: #f9faff;
+      width: 220px;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      transition: width 0.3s ease;
     }
-
-    /* Header */
-    header {
-      background-color: #FF7F00;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.8rem 2rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 2px solid rgba(255,255,255,0.3);
-    }
-
-    /* Left side of header */
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.6rem;
-      user-select: none;
-    }
-
-    /* Center quote */
-    .quote {
-      font-style: italic;
-      font-weight: 500;
-      text-align: center;
-      flex-grow: 1;
-      margin: 0 2rem;
-      color: #fff;
-      animation: blink 1.5s infinite;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 40vw;
-    }
-
-    @keyframes blink {
-      0%, 100% {opacity: 1;}
-      50% {opacity: 0.4;}
-    }
-
-    /* Navigation */
-    nav {
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    nav a {
-      color: white;
+    #sidebar a {
+      display: block;
+      margin: 12px 0;
       text-decoration: none;
-      font-weight: 600;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      user-select: none;
-    }
-    nav a:hover {
-      background-color: rgba(255,255,255,0.3);
       color: #000;
+      font-weight: 600;
+      font-size: 16px;
     }
-    nav a.active {
-      background-color: #fff;
-      color: #FF7F00;
-      pointer-events: none;
-      cursor: default;
+    #sidebar a:hover {
+      color: #0056b3;
     }
-
-    /* Main about box */
-    main {
+    #sidebar a.active {
+      color: #0056b3;
+      font-weight: 700;
+    }
+    #sidebar .spacer {
+      flex-grow: 1;
+    }
+    #main {
       flex-grow: 1;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 3rem 1rem;
+      flex-direction: column;
+      justify-content: space-between;
     }
-
-    .about-box {
+    .content {
+      padding: 40px 50px;
       background: #fff;
-      border: 4px solid #000;
-      border-radius: 12px;
-      padding: 3rem 4rem;
-      max-width: 420px;
+      flex-grow: 1;
+      overflow-y: auto;
+      max-width: 700px;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    h2 {
+      font-family: 'Merriweather', serif;
+      color: #0056b3;
+      margin-bottom: 25px;
       text-align: center;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-      user-select: none;
     }
-
-    .about-box p {
-      font-size: 1.3rem;
+    p.question {
       font-weight: 700;
-      margin: 1.2rem 0;
-      letter-spacing: 0.03em;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      color: #000080;
     }
-
-    /* Footer */
+    p.answer {
+      margin-left: 10px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .about {
+      margin-top: 40px;
+      font-style: italic;
+      color: #555;
+      text-align: center;
+      line-height: 1.4;
+    }
     footer {
       text-align: center;
-      font-size: 0.9rem;
-      padding: 1rem;
-      background: #FF7F00;
-      color: white;
-      font-weight: 600;
-      user-select: none;
-      border-top: 1px solid rgba(255,255,255,0.3);
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        gap: 0.6rem;
-        font-size: 1rem;
-      }
-      .quote {
-        max-width: 90vw;
-        margin: 0;
-      }
-      .about-box {
-        padding: 2rem;
-        max-width: 90vw;
-      }
+      font-size: 14px;
+      padding: 15px 10px;
+      background: #f0f4ff;
+      color: #555;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 -1px 3px #ddd;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">✍️ The To-Do List</div>
-    <div class="quote" id="dailyQuote">Loading quote...</div>
-    <nav>
-      <a href="profile.html">Profile</a>
-      <a href="about.html" class="active">About Us</a>
-      <a href="index.html">View Tasks</a>
-    </nav>
-  </header>
+  <nav id="sidebar">
+    <a href="#">Dashboard</a>
+    <a href="#">Calendar</a>
+    <a href="#">Track</a>
+    <a href="#">Reports</a>
+    <a href="#" class="active">Help & Support</a>
+    <a href="#">Settings</a>
+    <div class="spacer"></div>
+  </nav>
 
-  <main>
-    <div class="about-box" role="region" aria-label="About information">
-      <p>Built by Anjana CS24B2014</p>
-      <p>Built for the Developers Club</p>
-      <p>Built with love.</p>
-    </div>
-  </main>
+  <div id="main">
+    <div class="content">
+      <h2>Help & Support</h2>
 
-  <footer>
-    © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
-  </footer>
+      <p class="question">Q: How to add tasks?</p>
+      <p class="answer">A: Click the '+' icon on the dashboard or calendar.</p>
 
-  <script>
-    // Quotes array for each day of the week
-    const quotes = [
-      "Productivity is never an accident. — Paul J. Meyer",
-      "Focus on being productive instead of busy. — Tim Ferriss",
-      "Do something today that your future self will thank you for.",
-      "It's not always that we need to do more but rather that we need to focus on less. — Nathan W. Morris",
-      "Don’t watch the clock; do what it does. Keep going. — Sam Levenson",
-      "Amateurs sit and wait for inspiration, the rest of us just get up and go to work. — Stephen King",
-      "The secret of getting ahead is getting started. — Mark Twain"
-    ];
+      <p class="question">Q: Can I integrate my calendar?</p>
+      <p class="answer">A: Yes, Google Calendar integration is coming soon.</p>
 
-    function updateQuote() {
-      const day = new Date().getDay(); // 0 (Sun) - 6 (Sat)
-      let quote = quotes[day];
-      const quoteEl = document.getElementById('dailyQuote');
+      <p style="margin-top: 30px; font-style: italic; color: #666;">
+        Nothing else here yet, because this is for Developers Club recruitment.
+      </p>
 
-      // Blinking effect + rotating through words every second
-      let index = 0;
-      const words = quote.split(' ');
+      <div class="about" style="margin-top: 40px;">
+        <p>About Us:</p>
+        <p>Built by Anjana CS24B2014</p>
+        <p>Built for the Developers Club</p>
+        <p>Built with love</p>
+      </div>
+    </div> <!-- .content -->
 
-      setInterval(() => {
-        // Rotate words, showing 3 words at a time max (for brevity)
-        let visibleWords = words.slice(index, index + 3).join(' ');
-        if (visibleWords.length === 0) visibleWords = quote; // fallback full quote
-        quoteEl.textContent = visibleWords;
-        index++;
-        if(index >= words.length) index = 0;
-      }, 1000);
-    }
-
-    updateQuote();
-  </script>
+    <footer>
+      © 2025 built for Developer’s Club | Built with hopes of getting recruited | Anjana CS24B2014
+    </footer>
+  </div> <!-- #main -->
 </body>
 </html>
-
