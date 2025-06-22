@@ -1,56 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About Us - The To-Do List</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The To-Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- HEADER -->
-  <header id="header">
-    <div class="header-left">
-      <div id="logo">📝✒️</div>
-      <div id="site-name">The To-Do List</div>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <span class="emoji">✏️</span>
+            <h1>The To-Do List</h1>
+        </div>
+        <div class="daily-quote">
+            <p id="quote">"Productivity is being able to do things that you were never able to do before."</p>
+        </div>
+        <nav class="nav-links">
+            <a href="#" id="profile-link">Profile</a>
+            <a href="#" id="about-link">About Us</a>
+            <a href="#" id="tasks-link">View Tasks</a>
+        </nav>
+    </header>
+
+    <!-- Notification and Goal Bar -->
+    <div class="notification-bar">
+        <div class="notifications">
+            <span id="notification-count">1</span>
+            <div class="notification-dropdown">
+                <div class="notification-item">Welcome back! You have <span id="pending-count">3</span> pending tasks.</div>
+                <div class="notification-item">2 tasks carried over from yesterday</div>
+            </div>
+        </div>
+        <div class="goal-tracker">
+            <div class="goal-progress">
+                <span>Life Goals Progress: </span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="goal-progress-fill"></div>
+                </div>
+                <span id="goal-percentage">45%</span>
+            </div>
+            <div class="happiness-tracker">
+                <span>😊 Happiness: </span>
+                <div class="happiness-stars" id="happiness-stars">
+                    <i class="fas fa-star" data-value="1"></i>
+                    <i class="fas fa-star" data-value="2"></i>
+                    <i class="fas fa-star" data-value="3"></i>
+                    <i class="fas fa-star" data-value="4"></i>
+                    <i class="fas fa-star" data-value="5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="streak">
+            <span>🔥 Streak: </span>
+            <span id="streak-count">5</span>
+        </div>
     </div>
-    <div class="header-center" id="daily-quote">“Built to help you stay organized”</div>
-    <nav class="header-right">
-      <a href="profile.html">Profile</a>
-      <a href="about.html">About Us</a>
-      <a href="index.html">View Tasks</a>
-    </nav>
-  </header>
 
-  <main id="main-content" class="about-main">
-    <section class="card about-card">
-      <h1>About Us</h1>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Left Column -->
+        <div class="column left-column">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prev-month">&lt;</button>
+                    <h2 id="current-month">June 2025</h2>
+                    <button id="next-month">&gt;</button>
+                    <div class="year-dropdown">
+                        <button id="year-btn">2025</button>
+                        <div class="year-dropdown-content">
+                            <a href="#" data-year="2023">2023</a>
+                            <a href="#" data-year="2024">2024</a>
+                            <a href="#" data-year="2025" class="active">2025</a>
+                            <a href="#" data-year="2026">2026</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="calendar-grid" id="calendar"></div>
+            </div>
 
-      <div class="about-info-box">
-        <p><strong>Built by Anjana CS24B2014</strong><br />
-           Built for the Developer's Club<br />
-           Built with ❤️.</p>
+            <div class="pomodoro-timer">
+                <h3>Pomodoro Timer</h3>
+                <div class="timer-display" id="timer-display">25:00</div>
+                <div class="timer-controls">
+                    <button id="start-timer">Start</button>
+                    <button id="pause-timer">Pause</button>
+                    <button id="reset-timer">Reset</button>
+                    <input type="number" id="timer-minutes" min="1" max="60" value="25">
+                </div>
+                <div class="sound-controls">
+                    <label class="sound-toggle">
+                        <input type="checkbox" id="sound-toggle" checked> Sound
+                    </label>
+                    <select id="sound-options">
+                        <option value="sea">Sea</option>
+                        <option value="rain">Rain</option>
+                        <option value="forest">Forest</option>
+                    </select>
+                    <audio id="sea-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-ocean-waves-loop-1254.mp3" loop></audio>
+                    <audio id="rain-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-rain-loop-1243.mp3" loop></audio>
+                    <audio id="forest-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-forest-ambience-1681.mp3" loop></audio>
+                </div>
+            </div>
 
-        <h2>Difficulties faced:</h2>
-        <ul>
-          <li>Drag-and-drop logic and hover parts</li>
-          <li>Managing animations & transitions</li>
-          <li>Aligning all sections</li>
-          <li>Making it all connected and accurate</li>
-        </ul>
+            <div class="productivity-chart">
+                <h3>Productivity</h3>
+                <div class="chart-container">
+                    <canvas id="pie-chart"></canvas>
+                    <div class="chart-legend">
+                        <div><span class="legend-done"></span> <span id="done-text">Done (0%)</span></div>
+                        <div><span class="legend-doing"></span> <span id="doing-text">Doing (0%)</span></div>
+                        <div><span class="legend-todo"></span> <span id="todo-text">To Do (0%)</span></div>
+                    </div>
+                </div>
+                <div class="chart-toggle">
+                    <button class="active" data-period="daily">Daily</button>
+                    <button data-period="weekly">Weekly</button>
+                    <button data-period="monthly">Monthly</button>
+                </div>
+                <div class="carried-over">
+                    <h4>Carried Over</h4>
+                    <p>From yesterday: <span id="yesterday-pending">0</span> tasks</p>
+                    <p>From last week: <span id="lastweek-pending">0</span> tasks</p>
+                    <p>From last month: <span id="lastmonth-pending">0</span> tasks</p>
+                </div>
+            </div>
+        </div>
 
-        <h2>Enjoyed doing:</h2>
-        <ul>
-          <li>Adding features like Pomodoro, Upcoming Events, Reminders etc.</li>
-          <li>Detailing each part and editing until satisfied</li>
-          <li>Seeing everything come together finally was very fulfilling</li>
-        </ul>
-      </div>
-    </section>
-  </main>
+        <!-- Center Column -->
+        <div class="column center-column">
+            <div class="todays-tasks">
+                <h3>Today's Tasks</h3>
+                <ul class="task-list" id="today-tasks"></ul>
+            </div>
 
-  <footer id="footer">
-    © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
-  </footer>
+            <div class="upcoming-events">
+                <h3>Upcoming Events</h3>
+                <ul class="event-list" id="upcoming-events"></ul>
+                <button class="add-event">+ Add Event</button>
+                <div class="event-form hidden">
+                    <input type="text" placeholder="Event name" id="event-name">
+                    <input type="date" id="event-date">
+                    <select id="event-tag">
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                        <option value="holiday">Holiday</option>
+                    </select>
+                    <button id="save-event">Save</button>
+                    <button id="cancel-event">Cancel</button>
+                </div>
+            </div>
+
+            <div class="habit-tracker">
+                <h3>Habit Tracker</h3>
+                <ul class="habit-list" id="habit-list"></ul>
+                <button class="add-habit">+ Add Habit</button>
+                <div class="habit-form hidden">
+                    <input type="text" placeholder="Habit name" id="habit-name">
+                    <select id="habit-tag">
+                        <option value="health">Health</option>
+                        <option value="work">Work</option>
+                        <option value="personal">Personal</option>
+                    </select>
+                    <button id="save-habit">Save</button>
+                    <button id="cancel-habit">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column right-column">
+            <div class="add-task collapsible">
+                <h3 class="collapsible-header">Add Task +</h3>
+                <div class="collapsible-content">
+                    <form id="task-form">
+                        <input type="text" id="task-name" placeholder="Task name" required>
+                        <input type="date" id="task-date">
+                        <input type="time" id="task-time">
+                        <select id="task-tag">
+                            <option value="">Select tag</option>
+                            <option value="work">Work</option>
+                            <option value="personal">Personal</option>
+                            <option value="health">Health</option>
+                        </select>
+                        <select id="task-priority">
+                            <option value="normal">Normal Priority</option>
+                            <option value="high">High Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                        <input type="text" id="task-collaborator" placeholder="Collaborator">
+                        <textarea id="task-notes" placeholder="Notes"></textarea>
+                        <button type="submit">Add Task</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="edit-task collapsible">
+                <h3 class="collapsible-header">Edit Task +</h3>
+                <div class="collapsible-content">
+                    <form id="edit-task-form">
+                        <select id="edit-task-select">
+                            <option value="">Select task to edit</option>
+                        </select>
+                        <input type="text" id="edit-task-name" placeholder="Task name" required>
+                        <input type="date" id="edit-task-date">
+                        <input type="time" id="edit-task-time">
+                        <select id="edit-task-tag">
+                            <option value="work">Work</option>
+                            <option value="personal">Personal</option>
+                            <option value="health">Health</option>
+                        </select>
+                        <select id="edit-task-priority">
+                            <option value="normal">Normal Priority</option>
+                            <option value="high">High Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                        <input type="text" id="edit-task-collaborator" placeholder="Collaborator">
+                        <textarea id="edit-task-notes" placeholder="Notes"></textarea>
+                        <button type="submit">Update Task</button>
+                        <button type="button" id="delete-task">Delete Task</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="tomorrows-tasks">
+                <h3>Tomorrow's Tasks</h3>
+                <div class="view-toggle">
+                    <button class="active" id="day-view">Day</button>
+                    <button id="week-view">Week</button>
+                </div>
+                <ul class="task-list" id="tomorrow-tasks"></ul>
+            </div>
+
+            <div class="team-tasks">
+                <h3>Team Tasks</h3>
+                <ul class="task-list" id="team-tasks"></ul>
+            </div>
+
+            <div class="task-manager collapsible">
+                <h3 class="collapsible-header">Task Manager +</h3>
+                <div class="collapsible-content">
+                    <div class="tag-management">
+                        <h4>Tags</h4>
+                        <ul class="tag-list" id="tag-list">
+                            <li class="tag-item" data-tag="work">
+                                <span class="tag-color" style="background-color: #FFA500;"></span>
+                                <span class="tag-name">Work</span>
+                                <input type="color" class="tag-color-picker" value="#FFA500">
+                                <button class="tag-delete">&times;</button>
+                            </li>
+                            <li class="tag-item" data-tag="personal">
+                                <span class="tag-color" style="background-color: #4CAF50;"></span>
+                                <span class="tag-name">Personal</span>
+                                <input type="color" class="tag-color-picker" value="#4CAF50">
+                                <button class="tag-delete">&times;</button>
+                            </li>
+                        </ul>
+                        <div class="add-tag">
+                            <input type="text" id="new-tag-name" placeholder="New tag name">
+                            <input type="color" id="new-tag-color" value="#FFA500">
+                            <button id="add-tag">Add Tag</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Welcome, <span id="username-display">Guest</span>!</h2>
+            <p>Let's get productive!</p>
+            <div class="login-form">
+                <h3>Login</h3>
+                <input type="text" placeholder="Username" id="username">
+                <input type="password" placeholder="Password" id="password">
+                <button id="login-btn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>About Us</h2>
+            <div class="about-content">
+                <h3>The To-Do List</h3>
+                <div class="about-card">
+                    <p>Built by Anjana CS24B2014</p>
+                    <p>Built for the Developer's Club</p>
+                    <p>Built with ❤️</p>
+                </div>
+                <h3>Difficulties faced:</h3>
+                <ul>
+                    <li>Implementing drag and drop functionality</li>
+                    <li>Creating responsive design for all screen sizes</li>
+                </ul>
+                <h3>Enjoyed doing:</h3>
+                <ul>
+                    <li>Designing the UI/UX</li>
+                    <li>Implementing the Pomodoro timer</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 built for Developer's Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
