@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile - The To-Do List</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>📝 The To-Do List</h1>
+    </div>
+    <div class="header-center">
+      <p id="quote"></p>
+    </div>
+    <div class="header-right">
+      <a href="profile.html">Profile</a>
+      <a href="about.html">About Us</a>
+      <a href="index.html">View Tasks</a>
+    </div>
+  </header>
+
+  <div class="sub-header">
+    <div class="notifications">
+      🔔 Notifications (<span id="notification-count">0</span>)
+      <div id="notification-list" class="hidden"></div>
+    </div>
+    <div class="streak">
+      🔥 Streak: <span id="streak-count">0</span> days
+    </div>
+  </div>
+
+  <main class="container profile-page">
+    <h2>Login</h2>
+    <form id="login-form">
+      <label for="username">Username:</label><br />
+      <input type="text" id="username" name="username" required /><br /><br />
+      <label for="password">Password:</label><br />
+      <input type="password" id="password" name="password" required /><br /><br />
+      <button type="submit">Login</button>
+    </form>
+
+    <p id="login-message" style="color: red; margin-top: 10px;"></p>
+  </main>
+
+  <footer>
+    © 2025 built for Developer’s Club Recruitment | Built with hopes of getting recruited | Anjana CS24B2014
+  </footer>
+
+  <script>
+    const form = document.getElementById('login-form');
+    const message = document.getElementById('login-message');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = form.username.value.trim();
+      const password = form.password.value.trim();
+
+      if (username.toLowerCase() === 'anjana' && password === 'harrypotter') {
+        message.style.color = 'green';
+        message.textContent = 'Login successful! Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      } else {
+        message.style.color = 'red';
+        message.textContent = 'Invalid username or password. Try again.';
+      }
+    });
+  </script>
+</body>
+</html>
