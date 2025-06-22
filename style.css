@@ -1,298 +1,888 @@
-/* Reset and base */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+ /* Base Styles */
 body {
-  font-family: 'Poppins', sans-serif;
-  background: #fff;
-  color: #000;
-  line-height: 1.5;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
-/* HEADER */
-
-#header {
-  background: #ff6600; /* bright orange */
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.8rem 2rem;
-  font-weight: 600;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+/* Header */
+.header {
+    background-color: #FFA500;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-#logo {
-  font-size: 1.6rem;
+.emoji {
+    font-size: 2rem;
 }
 
-#site-name {
-  font-size: 1.3rem;
-  user-select: none;
+.daily-quote {
+    text-align: center;
+    font-style: italic;
 }
 
-.header-center {
-  font-style: italic;
-  font-weight: 400;
-  font-size: 1.1rem;
-  text-align: center;
-  flex: 1;
+.nav-links {
+    display: flex;
+    gap: 20px;
 }
 
-.header-right a {
-  color: white;
-  margin-left: 1.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: opacity 0.3s ease;
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.header-right a:hover {
-  opacity: 0.8;
+/* Notification Bar */
+.notification-bar {
+    background-color: #FFD699;
+    color: #FFA500;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    align-items: center;
 }
 
-/* STREAK + NOTIFICATIONS BAR */
-
-#streak-notifications-bar {
-  background: #ffe5cc; /* lighter orange */
-  color: #ff6600; /* orange text */
-  display: flex;
-  justify-content: space-between;
-  padding: 0.3rem 2rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-  user-select: none;
+.notifications {
+    position: relative;
+    cursor: pointer;
 }
 
-#notifications {
-  cursor: pointer;
-  position: relative;
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    background-color: white;
+    color: #333;
+    padding: 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 200px;
+    z-index: 10;
 }
 
-#notifications .badge {
-  background: #ff6600;
-  color: white;
-  font-size: 0.75rem;
-  padding: 0 6px;
-  border-radius: 12px;
-  position: absolute;
-  top: -8px;
-  right: -10px;
+.notifications:hover .notification-dropdown {
+    display: block;
 }
 
-#notifications-list {
-  display: none;
-  position: absolute;
-  top: 28px;
-  left: 0;
-  background: white;
-  border: 1px solid #ff6600;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  width: 300px;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 200;
-  padding: 0.5rem;
-  font-weight: 400;
-  color: #000;
+.notification-item {
+    padding: 0.3rem 0;
 }
 
-#notifications-list.show {
-  display: block;
+.goal-tracker {
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
-#streak {
-  font-weight: 600;
+.goal-progress {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-/* MAIN LAYOUT */
+.progress-bar {
+    width: 100px;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
 
-#main-content {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem 2rem;
-  flex-grow: 1;
-  min-height: calc(100vh - 100px); /* adjust for header + footer */
+.progress-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 45%;
+    transition: width 0.3s;
+}
+
+.happiness-tracker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.happiness-stars {
+    color: #FFD700;
+}
+
+.happiness-stars i {
+    cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+    min-height: calc(100vh - 180px);
 }
 
 .column {
-  background: #fafafa;
-  border-radius: 10px;
-  padding: 1rem 1.3rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-  overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-#left-column, #center-column, #right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-height: 85vh;
+.left-column {
+    flex: 0 0 25%;
 }
 
-#left-column {
-  flex: 1 1 22%;
+.center-column {
+    flex: 0 0 40%;
 }
 
-#center-column {
-  flex: 2 1 40%;
+.right-column {
+    flex: 0 0 35%;
 }
 
-#right-column {
-  flex: 1 1 30%;
+/* Calendar */
+.calendar-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Cards */
-
-.card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  padding: 1rem 1.2rem;
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
 }
 
-.card h2 {
-  margin-bottom: 0.6rem;
-  font-weight: 600;
-  border-bottom: 2px solid #ff6600;
-  padding-bottom: 0.3rem;
+.year-dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-/* Buttons */
-
-button, input[type="submit"] {
-  background: #ff6600;
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.25s ease;
+.year-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 60px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 1;
+    right: 0;
 }
 
-button:hover, input[type="submit"]:hover {
-  background: #e65500;
+.year-dropdown-content a {
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
 }
 
-/* Forms */
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
+.year-dropdown-content a:hover {
+    background-color: #f1f1f1;
 }
 
-input, select, textarea {
-  padding: 0.5rem 0.6rem;
-  border-radius: 8px;
-  border: 1.5px solid #ccc;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+.year-dropdown:hover .year-dropdown-content {
+    display: block;
 }
 
-input:focus, select:focus, textarea:focus {
-  border-color: #ff6600;
-  outline: none;
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
 }
 
-/* Lists */
-
-ul {
-  list-style-type: none;
+.calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
 }
 
-.task-item, .habit-item, .event-item, .team-task-item {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
-  transition: background-color 0.25s ease;
-  cursor: grab;
+.calendar-day {
+    text-align: center;
+    padding: 8px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
 }
 
-.task-item:hover, .habit-item:hover, .event-item:hover, .team-task-item:hover {
-  background-color: #fff3e0;
+.calendar-day:hover {
+    background-color: #f0f0f0;
 }
 
-.task-item.completed, .habit-item.completed {
-  text-decoration: line-through;
-  font-style: italic;
-  color: #888;
-  cursor: default;
+.calendar-day.today::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: red;
+    border-radius: 50%;
 }
 
-/* Tags */
-
-.tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  color: white;
-  user-select: none;
-  margin-left: auto;
-  white-space: nowrap;
+/* Pomodoro Timer */
+.pomodoro-timer {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
-.tag.school { background: #ff7043; } /* orange */
-.tag.family { background: #29b6f6; } /* blue */
-.tag.self { background: #66bb6a; } /* green */
-.tag.work { background: #ab47bc; } /* purple */
+.timer-display {
+    font-size: 2rem;
+    margin: 1rem 0;
+    font-family: monospace;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.timer-controls button {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #FFA500;
+    color: white;
+    cursor: pointer;
+}
+
+#timer-minutes {
+    width: 40px;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.sound-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sound-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#sound-options {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Productivity Chart */
+.productivity-chart {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+    margin-bottom: 10px;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+.legend-done, .legend-doing, .legend-todo {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.legend-done {
+    background-color: #FFD700;
+}
+
+.legend-doing {
+    background-color: #FFA500;
+}
+
+.legend-todo {
+    background-color: #FFE0B2;
+}
+
+.chart-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 1rem;
+}
+
+.chart-toggle button {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+}
+
+.chart-toggle button.active {
+    background-color: #FFA500;
+    color: white;
+    border-color: #FFA500;
+}
+
+.carried-over {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.carried-over h4 {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.carried-over p {
+    margin: 5px 0;
+}
+
+/* Task Lists */
+.todays-tasks, .tomorrows-tasks, .team-tasks, .upcoming-events, .habit-tracker {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    min-height: 100px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+    cursor: move;
+    background-color: white;
+    transition: all 0.3s;
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-item label {
+    margin-left: 10px;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.task-item.completed label {
+    text-decoration: line-through;
+    color: #888;
+    font-style: italic;
+}
+
+.task-item.completed {
+    background-color: #f9f9f9;
+    order: 1;
+}
+
+.task-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    margin-left: 10px;
+    background-color: #FFA500;
+    color: white;
+}
+
+.task-tag.work {
+    background-color: #FFA500;
+}
+
+.task-tag.personal {
+    background-color: #4CAF50;
+}
+
+.task-tag.health {
+    background-color: #2196F3;
+}
+
+.task-item.high-priority {
+    border-left: 3px solid #F44336;
+}
+
+.task-item.normal-priority {
+    border-left: 3px solid #FFC107;
+}
+
+.task-item.low-priority {
+    border-left: 3px solid #4CAF50;
+}
+
+/* Event List */
+.event-list {
+    list-style: none;
+    padding: 0;
+}
+
+.event-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.event-item:last-child {
+    border-bottom: none;
+}
+
+.event-name {
+    font-weight: bold;
+    flex: 1 1 100%;
+}
+
+.event-subtitle {
+    font-size: 0.8rem;
+    color: #666;
+    margin-right: 10px;
+}
+
+.event-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    margin-right: 10px;
+}
+
+.event-tag.work {
+    background-color: #FFD699;
+    color: #B35900;
+}
+
+.event-tag.personal {
+    background-color: #C8E6C9;
+    color: #2E7D32;
+}
+
+.event-tag.holiday {
+    background-color: #BBDEFB;
+    color: #0D47A1;
+}
+
+.event-delete {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #F44336;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.add-event, .add-habit {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.event-form, .habit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.event-form input, .habit-form input, 
+.event-form select, .habit-form select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.event-form button, .habit-form button {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#save-event, #save-habit {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#cancel-event, #cancel-habit {
+    background-color: #f44336;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Habit Tracker */
+.habit-list {
+    list-style: none;
+    padding: 0;
+}
+
+.habit-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.habit-item:last-child {
+    border-bottom: none;
+}
+
+.habit-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.habit-start-date {
+    font-size: 0.7rem;
+    color: #666;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.habit-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    margin-right: 10px;
+}
+
+.habit-tag.health {
+    background-color: #C8E6C9;
+    color: #2E7D32;
+}
+
+.habit-tag.work {
+    background-color: #FFD699;
+    color: #B35900;
+}
+
+.habit-tag.personal {
+    background-color: #BBDEFB;
+    color: #0D47A1;
+}
+
+.habit-delete {
+    background: none;
+    border: none;
+    color: #F44336;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Add/Edit Task Forms */
+.collapsible-header {
+    padding: 1rem;
+    cursor: pointer;
+    margin: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.collapsible-content {
+    padding: 0 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+}
+
+.collapsible.active .collapsible-content {
+    max-height: 1000px;
+    padding: 1rem;
+}
+
+#task-form, #edit-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#task-form input, #edit-task-form input,
+#task-form select, #edit-task-form select,
+#task-form textarea, #edit-task-form textarea {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#task-form button, #edit-task-form button {
+    padding: 8px;
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#delete-task {
+    background-color: #f44336;
+    margin-top: 10px;
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.view-toggle button {
+    padding: 3px 10px;
+    border: 1px solid #ddd;
+    background-color: white;
+    cursor: pointer;
+}
+
+.view-toggle button.active {
+    background-color: #FFA500;
+    color: white;
+    border-color: #FFA500;
+}
+
+/* Task Manager */
+.tag-management {
+    margin-top: 10px;
+}
+
+.tag-list {
+    list-style: none;
+    padding: 0;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.tag-color {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.tag-name {
+    flex-grow: 1;
+}
+
+.tag-color-picker {
+    width: 25px;
+    height: 25px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.tag-delete {
+    background: none;
+    border: none;
+    color: #F44336;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 10px;
+}
+
+.add-tag {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+#new-tag-name {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#add-tag {
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.login-form input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-form button {
+    padding: 8px;
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.about-card {
+    border: 2px solid black;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+    border-radius: 8px;
+}
 
 /* Footer */
-
-#footer {
-  background: #f4f4f4;
-  padding: 1rem 2rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #666;
-  user-select: none;
-  margin-top: auto;
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
 }
 
-/* Scrollbars */
+/* Drag and Drop */
+.sortable-ghost {
+    opacity: 0.5;
+    background: #c8ebfb;
+}    
 
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add these to your existing CSS */
+
+/* Notification bar styling */
+.notification-bar {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    align-items: center;
 }
 
-::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 6px;
+/* Timer display styling */
+.timer-display {
+    font-size: 3rem;
+    margin: 1rem 0;
+    font-family: monospace;
+    font-weight: bold;
+    color: #333;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #ff6600;
-  border-radius: 6px;
+/* Chart container sizing */
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
-/* Responsive */
-
-@media (max-width: 1024px) {
-  #main-content {
-    flex-direction: column;
-  }
-
-  #left-column, #center-column, #right-column {
-    max-height: none;
-    flex: none;
-  }
+/* Legend items */
+.chart-legend div {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
 }
+
+.legend-done, .legend-doing, .legend-todo {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
