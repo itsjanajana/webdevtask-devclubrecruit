@@ -1,305 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calendar - The To-Do List</title>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      color: #000;
-      background-color: #fff;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-      flex-direction: row;
-    }
-    #sidebar {
-      background: #f9faff;
-      width: 220px;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-sizing: border-box;
-      transition: width 0.3s ease;
-    }
-    #sidebar a {
-      display: block;
-      margin: 12px 0;
-      text-decoration: none;
-      color: #000;
-      font-weight: 600;
-      font-size: 16px;
-    }
-    #sidebar a:hover {
-      color: #0056b3;
-    }
-    #sidebar a.active {
-      color: #0056b3;
-      font-weight: 700;
-    }
-    #sidebar .spacer {
-      flex-grow: 1;
-    }
-    #main {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 20px 40px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-    h2 {
-      font-family: 'Merriweather', serif;
-      color: #0056b3;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .calendar-container {
-      max-width: 700px;
-      margin: 0 auto;
-      user-select: none;
-    }
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .calendar-header button {
-      background-color: #0056b3;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-    }
-    .calendar-header button:hover {
-      background-color: #003d99;
-    }
-    .calendar-header .month-year {
-      font-weight: 700;
-      font-size: 22px;
-      color: #003d99;
-      font-family: 'Merriweather', serif;
-    }
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-    }
-    .calendar-day {
-      font-weight: 600;
-      text-align: center;
-      padding: 8px 0;
-      color: #0056b3;
-      border-bottom: 2px solid #0056b3;
-      font-family: 'Inter', sans-serif;
-      user-select: none;
-    }
-    .calendar-date {
-      min-height: 80px;
-      background: #f0f4ff;
-      border-radius: 8px;
-      padding: 8px 5px 5px 5px;
-      box-sizing: border-box;
-      cursor: default;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      font-size: 14px;
-      color: #333;
-      transition: background-color 0.2s ease;
-    }
-    .calendar-date:hover {
-      background-color: #e0ebff;
-    }
-    .calendar-date.outside-month {
-      color: #aaa;
-      background: #f9faff;
-      cursor: default;
-    }
-    .calendar-date.today {
-      border: 2px solid red;
-      background: #ffe6e6;
-      font-weight: 700;
-    }
-    .date-number {
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .task-count {
-      font-size: 12px;
-      color: #0056b3;
-      margin-top: auto;
-      align-self: flex-end;
-      background-color: #d1e0ff;
-      padding: 2px 6px;
-      border-radius: 12px;
-      font-weight: 600;
-      user-select: none;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar - The To-Do List</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #000;
+    display: flex;
+    height: 100vh;
+  }
+  #sidebar {
+    background: #f9faff;
+    width: 220px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar a {
+    color: #000;
+    text-decoration: none;
+    margin: 12px 0;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  #sidebar a.active {
+    color: #0056b3;
+    font-weight: 700;
+  }
+  #sidebar a:hover {
+    color: #0056b3;
+  }
+  #sidebar .spacer {
+    flex-grow: 1;
+  }
+  #main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background: #0056b3;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: black;
+  }
+  .calendar-container {
+    padding: 20px 40px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .month-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .month-nav button {
+    background: #0056b3;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .month-nav button:hover {
+    background: #003d80;
+  }
+  .month-year {
+    font-family: 'Merriweather', serif;
+    font-size: 1.6rem;
+    color: #0056b3;
+  }
+  .weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: 700;
+    color: #0056b3;
+    margin-bottom: 10px;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: 100px;
+    gap: 8px;
+  }
+  .day-cell {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px;
+    position: relative;
+    background: #f9faff;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+  }
+  .day-cell.inactive {
+    color: #bbb;
+    background: #f4f6fb;
+  }
+  .date-number {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  .today .date-number {
+    border: 2px solid red;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    line-height: 24px;
+    text-align: center;
+    color: red;
+    font-weight: 900;
+  }
+  .tasks-count {
+    font-size: 0.8rem;
+    color: #0056b3;
+    margin-top: auto;
+  }
+</style>
 </head>
 <body>
   <nav id="sidebar">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="calendar.html" class="active">Calendar</a>
-    <a href="track.html">Track</a>
-    <a href="reports.html">Reports</a>
-    <a href="help.html">Help & Support</a>
-    <a href="settings.html">Settings</a>
+    <a href="#" >Dashboard</a>
+    <a href="#" class="active">Calendar</a>
+    <a href="#" >Track</a>
+    <a href="#" >Reports</a>
+    <a href="#" >Help & Support</a>
+    <a href="#">Settings</a>
     <div class="spacer"></div>
   </nav>
 
-  <main id="main">
-    <h2>Calendar</h2>
+  <div id="main">
+    <header>
+      The To-Do List - Calendar
+    </header>
+
     <div class="calendar-container">
-      <div class="calendar-header">
-        <button id="prevMonthBtn" aria-label="Previous Month">&lt;</button>
-        <div class="month-year" id="monthYear"></div>
-        <button id="nextMonthBtn" aria-label="Next Month">&gt;</button>
+      <div class="month-nav">
+        <button id="prevMonth">&lt; Prev</button>
+        <div class="month-year" id="monthYearLabel">Month Year</div>
+        <button id="nextMonth">Next &gt;</button>
       </div>
-      <div class="calendar-grid" id="calendarDaysHeader">
-        <div class="calendar-day">Sun</div>
-        <div class="calendar-day">Mon</div>
-        <div class="calendar-day">Tue</div>
-        <div class="calendar-day">Wed</div>
-        <div class="calendar-day">Thu</div>
-        <div class="calendar-day">Fri</div>
-        <div class="calendar-day">Sat</div>
+      <div class="weekdays">
+        <div>Sun</div>
+        <div>Mon</div>
+        <div>Tue</div>
+        <div>Wed</div>
+        <div>Thu</div>
+        <div>Fri</div>
+        <div>Sat</div>
       </div>
-      <div class="calendar-grid" id="calendarDates">
-        <!-- Dates will be injected here -->
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Days inserted by JS -->
       </div>
     </div>
-  </main>
+  </div>
 
   <script>
-    // Calendar JavaScript
-    (() => {
-      const monthYearElem = document.getElementById('monthYear');
-      const calendarDatesElem = document.getElementById('calendarDates');
-      const prevMonthBtn = document.getElementById('prevMonthBtn');
-      const nextMonthBtn = document.getElementById('nextMonthBtn');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthYearLabel = document.getElementById('monthYearLabel');
+    const prevBtn = document.getElementById('prevMonth');
+    const nextBtn = document.getElementById('nextMonth');
 
-      let currentDate = new Date();
+    let currentDate = new Date();
 
-      // Placeholder task data: keyed by 'YYYY-MM-DD', value is count of tasks
-      const tasksByDate = {
-        // Example placeholders:
-        '2025-06-15': 2,
-        '2025-06-10': 1,
-        '2025-07-04': 3,
-        '2025-07-20': 5,
-        '2025-05-30': 1,
-      };
+    function renderCalendar(date) {
+      calendarGrid.innerHTML = '';
 
-      function formatDateKey(year, month, day) {
-        // month zero-based
-        return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      }
+      const year = date.getFullYear();
+      const month = date.getMonth();
 
-      function renderCalendar(year, month) {
-        // Clear previous dates
-        calendarDatesElem.innerHTML = '';
+      // Show month and year label
+      const options = { month: 'long', year: 'numeric' };
+      monthYearLabel.textContent = date.toLocaleDateString('en-US', options);
 
-        // Show month-year header, e.g. June 2025
-        const monthName = new Date(year, month).toLocaleString('default', { month: 'long' });
-        monthYearElem.textContent = `${monthName} ${year}`;
+      // First day of month
+      const firstDay = new Date(year, month, 1);
+      // Last day of month
+      const lastDay = new Date(year, month + 1, 0);
 
-        // Get first day of month (0=Sun,6=Sat)
-        const firstDay = new Date(year, month, 1).getDay();
-        // Get number of days in current month
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        // Get number of days in previous month
-        const daysInPrevMonth = new Date(year, month, 0).getDate();
+      // What day of week the month starts on (0 Sun - 6 Sat)
+      const startDay = firstDay.getDay();
 
-        // Calculate total calendar cells (including prev & next month's days)
-        // Usually 42 (6 weeks * 7 days)
-        const totalCells = 42;
+      // Days in the month
+      const daysInMonth = lastDay.getDate();
 
-        // Today for highlighting
-        const today = new Date();
-        const todayStr = formatDateKey(today.getFullYear(), today.getMonth(), today.getDate());
+      // Days in prev month
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
 
-        for (let i = 0; i < totalCells; i++) {
-          const dateElem = document.createElement('div');
-          dateElem.classList.add('calendar-date');
+      // Calculate total cells (weeks x 7)
+      // We'll show 6 rows (42 cells) always for consistent height
+      const totalCells = 42;
 
-          let dateNumber, dateKey, isOutside = false;
+      // Today’s date to highlight
+      const today = new Date();
+      const todayStr = today.toDateString();
 
-          if (i < firstDay) {
-            // Dates from previous month
-            dateNumber = daysInPrevMonth - (firstDay - 1) + i;
-            dateKey = formatDateKey(year, month - 1, dateNumber);
-            isOutside = true;
-          } else if (i >= firstDay + daysInMonth) {
-            // Dates from next month
-            dateNumber = i - (firstDay + daysInMonth) + 1;
-            dateKey = formatDateKey(year, month + 1, dateNumber);
-            isOutside = true;
-          } else {
-            // Dates from current month
-            dateNumber = i - firstDay + 1;
-            dateKey = formatDateKey(year, month, dateNumber);
+      for(let i = 0; i < totalCells; i++) {
+        const dayCell = document.createElement('div');
+        dayCell.classList.add('day-cell');
+
+        let dayNum;
+        let cellDate;
+
+        if(i < startDay) {
+          // Days from previous month
+          dayNum = prevMonthLastDay - (startDay - 1 - i);
+          dayCell.classList.add('inactive');
+          cellDate = new Date(year, month - 1, dayNum);
+        } else if(i >= startDay + daysInMonth) {
+          // Days from next month
+          dayNum = i - (startDay + daysInMonth) + 1;
+          dayCell.classList.add('inactive');
+          cellDate = new Date(year, month + 1, dayNum);
+        } else {
+          // Current month days
+          dayNum = i - startDay + 1;
+          cellDate = new Date(year, month, dayNum);
+
+          if(cellDate.toDateString() === todayStr) {
+            dayCell.classList.add('today');
           }
-
-          dateElem.textContent = '';
-          const dateNumberElem = document.createElement('div');
-          dateNumberElem.classList.add('date-number');
-          dateNumberElem.textContent = dateNumber;
-          dateElem.appendChild(dateNumberElem);
-
-          // Show task count if exists and current month date
-          if (tasksByDate[dateKey] && !isOutside) {
-            const taskCountElem = document.createElement('div');
-            taskCountElem.classList.add('task-count');
-            taskCountElem.textContent = `${tasksByDate[dateKey]} task${tasksByDate[dateKey] > 1 ? 's' : ''}`;
-            dateElem.appendChild(taskCountElem);
-          }
-
-          if (isOutside) {
-            dateElem.classList.add('outside-month');
-          }
-
-          // Highlight today
-          if (dateKey === todayStr) {
-            dateElem.classList.add('today');
-          }
-
-          calendarDatesElem.appendChild(dateElem);
-        }
-      }
-
-      function changeMonth(delta) {
-        let newMonth = currentDate.getMonth() + delta;
-        let newYear = currentDate.getFullYear();
-
-        if (newMonth < 0) {
-          newMonth = 11;
-          newYear--;
-        } else if (newMonth > 11) {
-          newMonth = 0;
-          newYear++;
         }
 
-        currentDate = new Date(newYear, newMonth, 1);
-        renderCalendar(newYear, newMonth);
+        // Date number
+        const dateNumDiv = document.createElement('div');
+        dateNumDiv.classList.add('date-number');
+        dateNumDiv.textContent = dayNum;
+        dayCell.appendChild(dateNumDiv);
+
+        // Placeholder: Number of tasks for that day (just random for demo)
+        const tasksCountDiv = document.createElement('div');
+        tasksCountDiv.classList.add('tasks-count');
+
+        // For now, randomly generate 0–3 tasks to show
+        // (Later will update dynamically)
+        const taskCount = Math.floor(Math.random() * 4);
+        if(taskCount > 0) {
+          tasksCountDiv.textContent = `${taskCount} task${taskCount > 1 ? 's' : ''}`;
+        } else {
+          tasksCountDiv.textContent = '';
+        }
+        dayCell.appendChild(tasksCountDiv);
+
+        calendarGrid.appendChild(dayCell);
       }
+    }
 
-      // Initial render
-      renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+    prevBtn.addEventListener('click', () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      renderCalendar(currentDate);
+    });
 
-      prevMonthBtn.addEventListener('click', () => changeMonth(-1));
-      nextMonthBtn.addEventListener('click', () => changeMonth(1));
-    })();
+    nextBtn.addEventListener('click', () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      renderCalendar(currentDate);
+    });
+
+    // Initial render
+    renderCalendar(currentDate);
   </script>
 </body>
 </html>
