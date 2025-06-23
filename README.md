@@ -8,7 +8,9 @@ Hi! I’m Anjana Chandru (CS24B2014), and this is my project for the Developers 
 This website features a minimalistic white-and-blue design, with easy navigation and easy-to-use features and pages like Dashboard, Calendar, Track, Reports, Help & Support, and Settings — all working together seamlessly. On opening the app, you’re greeted by a _**login page**_ where you can enter:
 
 site: https://itsjanajana.github.io/webdevtask-devclubrecruit/
+
 Username: jana
+
 Password: harrypotter
 
 ![image](https://github.com/user-attachments/assets/b0abd8f6-8b6d-407f-8a33-873c397430a8)
