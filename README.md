@@ -1,5 +1,5 @@
 # webdevtask-devclubrecruit
-**The To-Do List App — Developers Club Recruitment Project**
+**The To-Do List App — Developers Club Recruitment Project** <\br>
 Hi! I’m Anjana Chandru (CS24B2014), and this is my project for the Developers Club recruitment. I’m really passionate about making websites and projects and also use producitvity planners myself. So, I wanted to build something easy-to-use, helpful, and visually pleasing that I’d love to use myself.
 
 **Introduction**
