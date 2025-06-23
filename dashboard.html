@@ -709,5 +709,36 @@
   init();
 })();
 </script>
+  <!-- ============================= -->
+<!-- Edit Task Modal (hidden by default) -->
+<div id="edit-task-modal" style="
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid #0056b3;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+">
+  <h3>Edit Task</h3>
+  <label for="edit-task-name">Task Name:</label><br>
+  <input id="edit-task-name" type="text" /><br><br>
+  
+  <label for="edit-task-date">Due Date:</label><br>
+  <input id="edit-task-date" type="date" /><br><br>
+  
+  <label for="edit-task-time">Time (optional):</label><br>
+  <input id="edit-task-time" type="time" /><br><br>
+  
+  <div style="margin-top: 15px; text-align: right;">
+    <button id="edit-task-save">Save</button>
+    <button id="edit-task-cancel">Cancel</button>
+  </div>
+</div>
+<!-- ============================= -->
+
 </body>
 </html>
